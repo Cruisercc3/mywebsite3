@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Outfit, Roboto_Mono, Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
+import { SoundProvider } from "@/components/sound-provider"
 
 // Use Outfit as our main font
 const outfit = Outfit({
@@ -42,7 +43,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`font-sans ${outfit.variable} ${robotoMono.variable} ${inter.variable}`}>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <SoundProvider>
+            {children}
+          </SoundProvider>
+        </ThemeProvider>
       </body>
     </html>
   )

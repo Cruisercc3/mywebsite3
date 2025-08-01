@@ -1,12 +1,14 @@
 "use client"
 
 import { useState } from "react"
-import { Check, Moon, Sun, Laptop, Volume2, VolumeX, Eye, EyeOff, Lock, Unlock, RefreshCw } from "lucide-react"
+import { Check, Moon, Sun, Laptop, Volume2, VolumeX, Eye, EyeOff, Lock, Unlock, RefreshCw, Play, Sliders } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
+import { Slider } from "@/components/ui/slider"
 import { cn } from "@/lib/utils"
 import { motion } from "framer-motion"
 import { useTheme } from "@/components/theme-provider" // Assuming this is the correct path
+import { useSound, type SoundType } from "@/hooks/use-sound"
 
 interface SettingsViewProps {
   className?: string
@@ -14,8 +16,8 @@ interface SettingsViewProps {
 
 export function SettingsView({ className }: SettingsViewProps) {
   const { theme, setTheme, highContrast, setHighContrast } = useTheme()
+  const { config, updateConfig, testSound, playSound } = useSound()
   const [reduceMotion, setReduceMotion] = useState(false)
-  const [soundEnabled, setSoundEnabled] = useState(true)
   const [privacyMode, setPrivacyMode] = useState(false)
   const [autoSave, setAutoSave] = useState(true)
   const [dataCollection, setDataCollection] = useState(true)
@@ -140,33 +142,144 @@ export function SettingsView({ className }: SettingsViewProps) {
           custom={1}
         >
           <div className="p-4 bg-gradient-to-b from-primary/5 to-transparent border-b border-primary/10">
-            <h3 className="text-lg font-semibold text-primary">Audio & Notifications</h3>
+            <h3 className="text-lg font-semibold text-primary">Audio & Sound Effects</h3>
           </div>
           <div className="p-6 space-y-6">
+            {/* Main Sound Toggle */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  {soundEnabled ? (
+                  {config.enabled ? (
                     <Volume2 className="h-5 w-5 text-primary" />
                   ) : (
                     <VolumeX className="h-5 w-5 text-primary/60" />
                   )}
                   <div>
                     <div className="text-sm font-medium">Sound Effects</div>
-                    <div className="text-xs text-primary/60">Play sounds for notifications and actions</div>
+                    <div className="text-xs text-primary/60">Calming sounds for interface interactions</div>
                   </div>
                 </div>
                 <Switch
-                  checked={soundEnabled}
-                  onCheckedChange={setSoundEnabled}
+                  checked={config.enabled}
+                  onCheckedChange={(enabled) => {
+                    updateConfig({ enabled })
+                    if (enabled) playSound("toggle")
+                  }}
                   className="data-[state=checked]:bg-primary"
                 />
               </div>
             </div>
 
-            <div className="pt-4 space-y-4">
-              <h4 className="text-sm font-medium mb-2">Notification Preferences</h4>
+            {/* Sound Configuration */}
+            {config.enabled && (
+              <div className="space-y-6 pt-2">
+                {/* Volume Control */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Sliders className="h-4 w-4 text-primary/70" />
+                      <span className="text-sm font-medium">Volume</span>
+                    </div>
+                    <span className="text-xs text-primary/60">{Math.round(config.volume * 100)}%</span>
+                  </div>
+                  <Slider
+                    value={[config.volume]}
+                    onValueChange={([volume]) => {
+                      updateConfig({ volume })
+                      testSound("click")
+                    }}
+                    max={1}
+                    min={0}
+                    step={0.1}
+                    className="w-full"
+                  />
+                </div>
 
+                {/* Sound Style Selection */}
+                <div className="space-y-3">
+                  <h4 className="text-sm font-medium">Sound Style</h4>
+                  <div className="grid grid-cols-3 gap-2">
+                    <button
+                      className={cn(
+                        "relative flex flex-col items-center justify-center p-3 rounded-lg border transition-all duration-200 text-xs",
+                        config.soundType === "soft"
+                          ? "border-primary bg-primary/10 shadow-sm"
+                          : "border-primary/20 hover:border-primary/40 hover:bg-primary/5"
+                      )}
+                      onClick={() => {
+                        updateConfig({ soundType: "soft" })
+                        testSound("click")
+                      }}
+                    >
+                      <span className="font-medium">Soft</span>
+                      <span className="text-xs text-primary/60 mt-1">Gentle & calming</span>
+                      {config.soundType === "soft" && <Check className="absolute top-1 right-1 h-3 w-3 text-primary" />}
+                    </button>
+                    <button
+                      className={cn(
+                        "relative flex flex-col items-center justify-center p-3 rounded-lg border transition-all duration-200 text-xs",
+                        config.soundType === "modern"
+                          ? "border-primary bg-primary/10 shadow-sm"
+                          : "border-primary/20 hover:border-primary/40 hover:bg-primary/5"
+                      )}
+                      onClick={() => {
+                        updateConfig({ soundType: "modern" })
+                        testSound("click")
+                      }}
+                    >
+                      <span className="font-medium">Modern</span>
+                      <span className="text-xs text-primary/60 mt-1">Crisp & clean</span>
+                      {config.soundType === "modern" && <Check className="absolute top-1 right-1 h-3 w-3 text-primary" />}
+                    </button>
+                    <button
+                      className={cn(
+                        "relative flex flex-col items-center justify-center p-3 rounded-lg border transition-all duration-200 text-xs",
+                        config.soundType === "minimal"
+                          ? "border-primary bg-primary/10 shadow-sm"
+                          : "border-primary/20 hover:border-primary/40 hover:bg-primary/5"
+                      )}
+                      onClick={() => {
+                        updateConfig({ soundType: "minimal" })
+                        testSound("click")
+                      }}
+                    >
+                      <span className="font-medium">Minimal</span>
+                      <span className="text-xs text-primary/60 mt-1">Subtle & quiet</span>
+                      {config.soundType === "minimal" && <Check className="absolute top-1 right-1 h-3 w-3 text-primary" />}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Sound Preview */}
+                <div className="space-y-3">
+                  <h4 className="text-sm font-medium">Preview Sounds</h4>
+                  <div className="grid grid-cols-2 gap-2">
+                    {[
+                      { type: "click" as SoundType, label: "Click", description: "Button presses" },
+                      { type: "hover" as SoundType, label: "Hover", description: "Element focus" },
+                      { type: "success" as SoundType, label: "Success", description: "Completed actions" },
+                      { type: "notification" as SoundType, label: "Notification", description: "Alerts & messages" },
+                    ].map(({ type, label, description }) => (
+                      <button
+                        key={type}
+                        className="flex items-center gap-2 p-2 rounded-lg border border-primary/20 hover:border-primary/40 hover:bg-primary/5 transition-all duration-200"
+                        onClick={() => testSound(type)}
+                      >
+                        <Play className="h-3 w-3 text-primary/70" />
+                        <div className="text-left">
+                          <div className="text-xs font-medium">{label}</div>
+                          <div className="text-xs text-primary/60">{description}</div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Notification Preferences */}
+            <div className="pt-4 space-y-4 border-t border-primary/10">
+              <h4 className="text-sm font-medium">Notification Preferences</h4>
               <div className="space-y-3 pl-2">
                 <div className="flex items-center gap-2">
                   <Switch id="chat-notifications" className="data-[state=checked]:bg-primary" defaultChecked />
