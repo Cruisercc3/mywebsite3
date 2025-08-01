@@ -19,6 +19,7 @@ import { NoteManager } from "@/components/note-manager"
 import { AgentsView } from "@/components/agents-view"
 import { AgentQuestionsView } from "@/components/agent-questions-view"
 import { QuestionDetailView } from "@/components/question-detail-view"
+import { TypingSoundWrapper } from "@/components/ui/sound-wrapper"
 
 interface Message {
   id: string
@@ -891,21 +892,23 @@ export default function ChatPage() {
                   </div>
                   <div className="p-2.5 h-[calc(100%-40px)] flex flex-col justify-center">
                     <div className="relative w-full">
-                      <textarea
-                        value={agentInputText}
-                        onChange={(e) => setAgentInputText(e.target.value)}
-                        placeholder="Type your input here..."
-                        className="w-full p-3 bg-background border border-primary/10 rounded-lg focus:ring-1 focus:ring-primary/30 focus:outline-none resize-none transition-all duration-300 min-h-[60px]"
-                        style={consistentTextStyles}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter" && !e.shiftKey) {
-                            e.preventDefault()
-                            if (agentInputText.trim()) {
-                              handleAgentFullscreenSubmit(new Event("submit") as any)
+                      <TypingSoundWrapper>
+                        <textarea
+                          value={agentInputText}
+                          onChange={(e) => setAgentInputText(e.target.value)}
+                          placeholder="Type your input here..."
+                          className="w-full p-3 bg-background border border-primary/10 rounded-lg focus:ring-1 focus:ring-primary/30 focus:outline-none resize-none transition-all duration-300 min-h-[60px]"
+                          style={consistentTextStyles}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" && !e.shiftKey) {
+                              e.preventDefault()
+                              if (agentInputText.trim()) {
+                                handleAgentFullscreenSubmit(new Event("submit") as any)
+                              }
                             }
-                          }
-                        }}
-                      />
+                          }}
+                        />
+                      </TypingSoundWrapper>
                       <Button
                         type="button"
                         onClick={(e) => handleAgentFullscreenSubmit(new Event("submit") as any)}
@@ -1178,25 +1181,27 @@ export default function ChatPage() {
                                   )}
                                 </Button>
                               </div>
-                              <textarea
-                                ref={textareaRef}
-                                value={newInput}
-                                onChange={(e) => setNewInput(e.target.value)}
-                                placeholder="Type your message here..."
-                                className={`w-full p-3 bg-background border border-primary/10 rounded-lg focus:ring-1 focus:ring-primary/30 focus:outline-none resize-none transition-all duration-300 ${isInputExpanded ? "min-h-[300px]" : "min-h-[60px]"}`}
-                                style={consistentTextStyles}
-                                onFocus={() => setIsInputFocused(true)}
-                                onBlur={() => setIsInputFocused(false)}
-                                onKeyDown={(e) => {
-                                  if (e.key === "Enter" && !e.shiftKey && !isInputExpanded) {
-                                    e.preventDefault()
-                                    if (newInput.trim()) {
-                                      handleNewInputSubmit(e)
+                              <TypingSoundWrapper>
+                                <textarea
+                                  ref={textareaRef}
+                                  value={newInput}
+                                  onChange={(e) => setNewInput(e.target.value)}
+                                  placeholder="Type your message here..."
+                                  className={`w-full p-3 bg-background border border-primary/10 rounded-lg focus:ring-1 focus:ring-primary/30 focus:outline-none resize-none transition-all duration-300 ${isInputExpanded ? "min-h-[300px]" : "min-h-[60px]"}`}
+                                  style={consistentTextStyles}
+                                  onFocus={() => setIsInputFocused(true)}
+                                  onBlur={() => setIsInputFocused(false)}
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter" && !e.shiftKey && !isInputExpanded) {
+                                      e.preventDefault()
+                                      if (newInput.trim()) {
+                                        handleNewInputSubmit(e)
+                                      }
                                     }
-                                  }
-                                }}
-                                autoFocus
-                              />
+                                  }}
+                                  autoFocus
+                                />
+                              </TypingSoundWrapper>
                               <Button
                                 type="submit"
                                 className="absolute bottom-2 right-2 rounded-full bg-primary hover:bg-primary/90 shadow-md h-8 w-8 p-0 flex items-center justify-center transition-all duration-300 hover:shadow-lg"
@@ -1258,25 +1263,27 @@ export default function ChatPage() {
                                   )}
                                 </Button>
                               </div>
-                              <textarea
-                                ref={textareaRef}
-                                value={newInput}
-                                onChange={(e) => setNewInput(e.target.value)}
-                                placeholder="Type your message here..."
-                                className={`w-full p-3 bg-background border border-primary/10 rounded-lg focus:ring-1 focus:ring-primary/30 focus:outline-none resize-none transition-all duration-300 ${isInputExpanded ? "min-h-[300px]" : "min-h-[60px]"}`}
-                                style={consistentTextStyles}
-                                onFocus={() => setIsInputFocused(true)}
-                                onBlur={() => setIsInputFocused(false)}
-                                onKeyDown={(e) => {
-                                  if (e.key === "Enter" && !e.shiftKey && !isInputExpanded) {
-                                    e.preventDefault()
-                                    if (newInput.trim()) {
-                                      handleNewInputSubmit(e)
+                              <TypingSoundWrapper>
+                                <textarea
+                                  ref={textareaRef}
+                                  value={newInput}
+                                  onChange={(e) => setNewInput(e.target.value)}
+                                  placeholder="Type your message here..."
+                                  className={`w-full p-3 bg-background border border-primary/10 rounded-lg focus:ring-1 focus:ring-primary/30 focus:outline-none resize-none transition-all duration-300 ${isInputExpanded ? "min-h-[300px]" : "min-h-[60px]"}`}
+                                  style={consistentTextStyles}
+                                  onFocus={() => setIsInputFocused(true)}
+                                  onBlur={() => setIsInputFocused(false)}
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter" && !e.shiftKey && !isInputExpanded) {
+                                      e.preventDefault()
+                                      if (newInput.trim()) {
+                                        handleNewInputSubmit(e)
+                                      }
                                     }
-                                  }
-                                }}
-                                autoFocus
-                              />
+                                  }}
+                                  autoFocus
+                                />
+                              </TypingSoundWrapper>
                               <Button
                                 type="submit"
                                 className="absolute bottom-2 right-2 rounded-full bg-primary hover:bg-primary/90 shadow-md h-8 w-8 p-0 flex items-center justify-center transition-all duration-300 hover:shadow-lg"

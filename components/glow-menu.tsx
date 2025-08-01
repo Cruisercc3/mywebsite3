@@ -5,6 +5,7 @@ import type * as React from "react"
 import { motion } from "framer-motion"
 import { Home, MessageSquare, Calendar, Settings, StickyNote } from "lucide-react"
 import { useTheme } from "next-themes"
+import { useSound } from "@/hooks/use-sound"
 
 interface MenuItem {
   icon: React.ElementType
@@ -108,6 +109,7 @@ interface GlowMenuProps {
 
 export function GlowMenu({ toggleBrainView, goToHome, goToCalendar, goToStorage, goToSettings }: GlowMenuProps) {
   const { theme } = useTheme()
+  const { playSound } = useSound()
 
   const isDarkTheme = theme === "dark"
 
@@ -117,6 +119,9 @@ export function GlowMenu({ toggleBrainView, goToHome, goToCalendar, goToStorage,
       e.stopPropagation()
 
       if (!action) return
+
+      // Play navigation sound
+      playSound('navigation')
 
       // Use setTimeout to ensure the action happens after the click event
       setTimeout(() => {
@@ -139,7 +144,7 @@ export function GlowMenu({ toggleBrainView, goToHome, goToCalendar, goToStorage,
         }
       }, 0)
     },
-    [toggleBrainView, goToHome, goToCalendar, goToStorage, goToSettings],
+    [toggleBrainView, goToHome, goToCalendar, goToStorage, goToSettings, playSound],
   )
 
   return (
