@@ -1,12 +1,15 @@
 "use client"
 
-import { useState } from "react"
-import { Check, Moon, Sun, Laptop, Volume2, VolumeX, Eye, EyeOff, Lock, Unlock, RefreshCw } from "lucide-react"
+import { useState, useEffect } from "react"
+import { Check, Moon, Sun, Laptop, Volume2, VolumeX, Eye, EyeOff, Lock, Unlock, RefreshCw, ChevronDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Slider } from "@/components/ui/slider"
 import { cn } from "@/lib/utils"
 import { motion } from "framer-motion"
 import { useTheme } from "@/components/theme-provider" // Assuming this is the correct path
+import { useSound, type SoundTheme } from "@/hooks/use-sound"
 
 interface SettingsViewProps {
   className?: string
@@ -14,15 +17,46 @@ interface SettingsViewProps {
 
 export function SettingsView({ className }: SettingsViewProps) {
   const { theme, setTheme, highContrast, setHighContrast } = useTheme()
+  const { playSound, updateConfig, getConfig, soundThemes } = useSound()
   const [reduceMotion, setReduceMotion] = useState(false)
   const [soundEnabled, setSoundEnabled] = useState(true)
+  const [soundTheme, setSoundTheme] = useState<SoundTheme>('default')
+  const [soundVolume, setSoundVolume] = useState([70])
   const [privacyMode, setPrivacyMode] = useState(false)
   const [autoSave, setAutoSave] = useState(true)
   const [dataCollection, setDataCollection] = useState(true)
 
+  // Load sound settings on component mount
+  useEffect(() => {
+    const config = getConfig()
+    setSoundEnabled(config.enabled)
+    setSoundTheme(config.theme)
+    setSoundVolume([config.volume * 100])
+  }, [getConfig])
+
   // Function to handle theme change
   const handleThemeChange = (newTheme: "light" | "dark" | "system") => {
     setTheme(newTheme)
+  }
+
+  // Sound settings handlers
+  const handleSoundEnabledChange = (enabled: boolean) => {
+    setSoundEnabled(enabled)
+    updateConfig({ enabled })
+    if (enabled) {
+      playSound('success')
+    }
+  }
+
+  const handleSoundThemeChange = (theme: SoundTheme) => {
+    setSoundTheme(theme)
+    updateConfig({ theme })
+    playSound('navigation')
+  }
+
+  const handleVolumeChange = (value: number[]) => {
+    setSoundVolume(value)
+    updateConfig({ volume: value[0] / 100 })
   }
 
   // Card animation variants
@@ -158,10 +192,74 @@ export function SettingsView({ className }: SettingsViewProps) {
                 </div>
                 <Switch
                   checked={soundEnabled}
-                  onCheckedChange={setSoundEnabled}
+                  onCheckedChange={handleSoundEnabledChange}
                   className="data-[state=checked]:bg-primary"
                 />
               </div>
+
+              {soundEnabled && (
+                <>
+                  <div className="space-y-3 pl-8">
+                    <div>
+                      <div className="text-sm font-medium mb-2">Sound Theme</div>
+                      <Select value={soundTheme} onValueChange={handleSoundThemeChange}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select sound theme" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="default">Default</SelectItem>
+                          <SelectItem value="minimal">Minimal</SelectItem>
+                          <SelectItem value="retro">Retro</SelectItem>
+                          <SelectItem value="nature">Nature</SelectItem>
+                          <SelectItem value="electronic">Electronic</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <div className="text-sm font-medium mb-2">Volume</div>
+                      <div className="flex items-center gap-3">
+                        <Slider
+                          value={soundVolume}
+                          onValueChange={handleVolumeChange}
+                          max={100}
+                          min={0}
+                          step={5}
+                          className="flex-1"
+                        />
+                        <span className="text-xs text-primary/60 w-10">{soundVolume[0]}%</span>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-2 pt-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => playSound('click')}
+                        className="text-xs h-7"
+                      >
+                        Test Click
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => playSound('navigation')}
+                        className="text-xs h-7"
+                      >
+                        Test Navigation
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => playSound('typing')}
+                        className="text-xs h-7"
+                      >
+                        Test Typing
+                      </Button>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
 
             <div className="pt-4 space-y-4">

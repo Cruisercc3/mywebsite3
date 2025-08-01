@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { cn } from "@/lib/utils"
+import { useSound } from "@/hooks/use-sound"
+import { SoundWrapper, TypingSoundWrapper } from "@/components/ui/sound-wrapper"
 
 interface Message {
   id: string
@@ -53,6 +55,7 @@ export function Sidebar({
   onClick,
   conversations: initialConversations,
 }: SidebarProps) {
+  const { playSound } = useSound()
   const [searchQuery, setSearchQuery] = useState("")
   const [contextMenu, setContextMenu] = useState<ContextMenuState>({ visible: false, x: 0, y: 0, chatId: null })
   const [conversations, setConversations] = useState<ChatItem[]>(initialConversations)
@@ -71,10 +74,12 @@ export function Sidebar({
 
   // Handle button clicks to dispatch events to main UI
   const handleQuestionClick = () => {
+    playSound('click')
     window.dispatchEvent(new CustomEvent("create-question-popup"))
   }
 
   const handleStickyNoteClick = () => {
+    playSound('click')
     window.dispatchEvent(
       new CustomEvent("create-sticky-note", {
         detail: {
@@ -86,11 +91,13 @@ export function Sidebar({
   }
 
   const handleClarificationClick = () => {
+    playSound('click')
     window.dispatchEvent(new CustomEvent("create-clarification-popup"))
   }
 
   // Handle new chat creation
   const handleNewChat = () => {
+    playSound('click')
     const newChatId = `chat-${Date.now()}`
     // In a real app, you'd update a global state or call a prop to add this chat
     // For this example, we'll just select it, assuming app/page.tsx handles creation
@@ -126,6 +133,7 @@ export function Sidebar({
   }
 
   const handleSelectChat = (chatId: string) => {
+    playSound('click')
     setSelectedChats((prev) => {
       const newSet = new Set(prev)
       if (newSet.has(chatId)) {
@@ -187,20 +195,21 @@ export function Sidebar({
     return items.map((conversation) => (
       <div key={conversation.id} className="space-y-1">
         <div className="flex items-center group">
-          <button
-            className={cn(
-              "w-full text-left px-2 py-1.5 rounded-md text-sm transition-colors flex-grow",
-              conversation.active
-                ? "bg-primary/10 text-primary font-medium"
-                : selectedChats.has(conversation.id)
-                  ? "bg-blue-500/20 text-blue-600 border border-blue-500/30"
-                  : "hover:bg-sidebar-accent text-sidebar-foreground/80",
-              level > 0 && "pl-4",
-            )}
-            style={{ paddingLeft: `${0.5 + level * 1}rem` }}
-            onClick={() => onChatSelect(conversation.id)}
-            onContextMenu={(e) => handleContextMenu(e, conversation.id)}
-          >
+          <SoundWrapper soundType="navigation">
+            <button
+              className={cn(
+                "w-full text-left px-2 py-1.5 rounded-md text-sm transition-colors flex-grow",
+                conversation.active
+                  ? "bg-primary/10 text-primary font-medium"
+                  : selectedChats.has(conversation.id)
+                    ? "bg-blue-500/20 text-blue-600 border border-blue-500/30"
+                    : "hover:bg-sidebar-accent text-sidebar-foreground/80",
+                level > 0 && "pl-4",
+              )}
+              style={{ paddingLeft: `${0.5 + level * 1}rem` }}
+              onClick={() => onChatSelect(conversation.id)}
+              onContextMenu={(e) => handleContextMenu(e, conversation.id)}
+            >
             <div className="flex items-center">
               {level === 0 ? (
                 <MessageSquare className="h-4 w-4 mr-2 shrink-0" />
@@ -213,6 +222,7 @@ export function Sidebar({
               )}
             </div>
           </button>
+          </SoundWrapper>
           <Button
             variant="ghost"
             size="sm"
@@ -257,13 +267,15 @@ export function Sidebar({
       <div className="p-2 border-b border-sidebar-border">
         <div className="relative">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-sidebar-foreground/40" />
-          <Input
-            type="search"
-            placeholder="Search conversations..."
-            className="pl-9 h-9 bg-sidebar-accent border-sidebar-border text-sidebar-foreground"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+          <TypingSoundWrapper>
+            <Input
+              type="search"
+              placeholder="Search conversations..."
+              className="pl-9 h-9 bg-sidebar-accent border-sidebar-border text-sidebar-foreground"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </TypingSoundWrapper>
         </div>
       </div>
 
