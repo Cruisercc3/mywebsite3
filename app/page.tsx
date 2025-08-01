@@ -19,6 +19,7 @@ import { NoteManager } from "@/components/note-manager"
 import { AgentsView } from "@/components/agents-view"
 import { AgentQuestionsView } from "@/components/agent-questions-view"
 import { QuestionDetailView } from "@/components/question-detail-view"
+import { AnimatedHeader } from "@/components/animated-header"
 
 interface Message {
   id: string
@@ -1091,22 +1092,28 @@ export default function ChatPage() {
                 paddingRight: currentView === "calendar" || currentView === "agents" ? "10px" : "40px",
               }}
             >
-              <header className="border-b py-1.5 px-2.5 flex justify-between items-center">
+              <header className="border-b py-4 px-6 flex justify-between items-center">
                 <div className="flex items-center">
-                  {/* Update the header labels */}
-                  <h1 className="text-base font-semibold text-foreground">
-                    {currentView === "calendar" && "Insights"}
-                    {currentView === "settings" && "Settings"}
-                    {currentView === "storage" && "Notes"}
-                    {currentView === "agents" && "Questions"}
-                  </h1>
+                  {/* Enhanced animated headers */}
+                  {currentView === "calendar" && (
+                    <AnimatedHeader text="Insights" size="md" className="mb-0" />
+                  )}
+                  {currentView === "settings" && (
+                    <AnimatedHeader text="Settings" size="md" className="mb-0" />
+                  )}
+                  {currentView === "storage" && (
+                    <AnimatedHeader text="Notes" size="md" className="mb-0" />
+                  )}
+                  {currentView === "agents" && (
+                    <AnimatedHeader text="Questions" size="md" className="mb-0" />
+                  )}
                 </div>
               </header>
               <div className={`flex-1 overflow-auto flex items-start ${currentView === "calendar" || currentView === "agents" ? "" : "justify-center"}`}>
                 {currentView === "calendar" && <CalendarView className="w-full h-full" />}
                 {currentView === "settings" && <SettingsView className="w-full max-w-6xl mx-auto" />}
                 {currentView === "storage" && <StorageView className="w-full h-full" />}
-                {currentView === "agents" && <CalendarView className="w-full h-full" />}
+                {currentView === "agents" && <AgentsView className="w-full h-full" />}
               </div>
             </div>
           </div>
