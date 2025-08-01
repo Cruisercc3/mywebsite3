@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { cn } from "@/lib/utils"
+import { useSound } from "@/hooks/use-sound"
 
 interface Message {
   id: string
@@ -53,6 +54,7 @@ export function Sidebar({
   onClick,
   conversations: initialConversations,
 }: SidebarProps) {
+  const { playSound, isEnabled } = useSound()
   const [searchQuery, setSearchQuery] = useState("")
   const [contextMenu, setContextMenu] = useState<ContextMenuState>({ visible: false, x: 0, y: 0, chatId: null })
   const [conversations, setConversations] = useState<ChatItem[]>(initialConversations)
@@ -198,7 +200,10 @@ export function Sidebar({
               level > 0 && "pl-4",
             )}
             style={{ paddingLeft: `${0.5 + level * 1}rem` }}
-            onClick={() => onChatSelect(conversation.id)}
+            onClick={() => {
+              if (isEnabled) playSound("navigation")
+              onChatSelect(conversation.id)
+            }}
             onContextMenu={(e) => handleContextMenu(e, conversation.id)}
           >
             <div className="flex items-center">
