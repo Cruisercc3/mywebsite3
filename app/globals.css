@@ -1,0 +1,2316 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 340 85% 35%;
+    --primary-rgb: 153, 13, 50;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 340 85% 97%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 340 85% 97%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 340 85% 35%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 340 85% 90%;
+    --input: 340 85% 90%;
+    --ring: 340 85% 35%;
+    --radius: 1rem;
+    --neon-blue: 210 100% 50%;
+    --neon-blue-glow: 210 100% 65%;
+
+    /* Sidebar specific variables */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 222 47% 11%;
+    --sidebar-border: 340 85% 90%;
+    --sidebar-accent: 340 85% 95%;
+    --sidebar-accent-foreground: 222 47% 11%;
+    --sidebar-ring: 340 85% 35%;
+  }
+
+  /* Dark Grey/Blue Theme */
+  .theme-dark-blue {
+    --background: 220 20% 15%;
+    --foreground: 213 31% 91%;
+    --card: 220 20% 15%;
+    --card-foreground: 213 31% 91%;
+    --popover: 220 20% 15%;
+    --popover-foreground: 213 31% 91%;
+    --primary: 210 100% 45%;
+    --primary-rgb: 0, 102, 204;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 20% 20%;
+    --secondary-foreground: 213 31% 91%;
+    --muted: 220 20% 20%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 210 100% 45%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 20% 25%;
+    --input: 220 20% 25%;
+    --ring: 210 100% 45%;
+    --neon-blue: 210 100% 60%;
+    --neon-blue-glow: 210 100% 75%;
+
+    /* Sidebar specific variables */
+    --sidebar-background: 220 20% 15%;
+    --sidebar-foreground: 213 31% 91%;
+    --sidebar-border: 220 20% 25%;
+    --sidebar-accent: 220 20% 25%;
+    --sidebar-accent-foreground: 213 31% 91%;
+    --sidebar-ring: 210 100% 45%;
+  }
+
+  .dark {
+    --background: 224 71% 4%;
+    --foreground: 213 31% 91%;
+    --card: 224 71% 4%;
+    --card-foreground: 213 31% 91%;
+    --popover: 224 71% 4%;
+    --popover-foreground: 213 31% 91%;
+    --primary: 340 85% 45%;
+    --primary-rgb: 179, 18, 60;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 222 47% 11%;
+    --secondary-foreground: 213 31% 91%;
+    --muted: 223 47% 11%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 216 34% 17%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 216 34% 17%;
+    --input: 216 34% 17%;
+    --ring: 340 85% 45%;
+    --neon-blue: 210 100% 60%;
+    --neon-blue-glow: 210 100% 75%;
+
+    /* Sidebar specific variables */
+    --sidebar-background: 224 71% 4%;
+    --sidebar-foreground: 213 31% 91%;
+    --sidebar-border: 216 34% 17%;
+    --sidebar-accent: 216 34% 17%;
+    --sidebar-accent-foreground: 213 31% 91%;
+    --sidebar-ring: 340 85% 45%;
+  }
+
+  /* High Contrast Mode - Light */
+  .high-contrast {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 0%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0%;
+    --primary: 0 0% 0%;
+    --primary-rgb: 0, 0, 0;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 95%;
+    --secondary-foreground: 0 0% 0%;
+    --muted: 0 0% 90%;
+    --muted-foreground: 0 0% 20%;
+    --accent: 0 0% 0%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 100% 25%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 0%;
+    --input: 0 0% 95%;
+    --ring: 0 0% 0%;
+    --neon-blue: 220 100% 30%;
+    --neon-blue-glow: 220 100% 40%;
+
+    /* Sidebar specific variables */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 0 0% 0%;
+    --sidebar-border: 0 0% 0%;
+    --sidebar-accent: 0 0% 90%;
+    --sidebar-accent-foreground: 0 0% 0%;
+    --sidebar-ring: 0 0% 0%;
+  }
+
+  /* High Contrast Mode - Dark */
+  .dark.high-contrast {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 0%;
+    --card-foreground: 0 0% 100%;
+    --popover: 0 0% 0%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 0 0% 100%;
+    --primary-rgb: 255, 255, 255;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 80%;
+    --accent: 0 0% 100%;
+    --accent-foreground: 0 0% 0%;
+    --destructive: 0 100% 60%;
+    --destructive-foreground: 0 0% 0%;
+    --border: 0 0% 100%;
+    --input: 0 0% 10%;
+    --ring: 0 0% 100%;
+    --neon-blue: 220 100% 70%;
+    --neon-blue-glow: 220 100% 80%;
+
+    /* Sidebar specific variables */
+    --sidebar-background: 0 0% 0%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-border: 0 0% 100%;
+    --sidebar-accent: 0 0% 15%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-ring: 0 0% 100%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  ::selection {
+    @apply bg-primary/20 text-foreground;
+    color: inherit !important;
+  }
+}
+
+@layer components {
+  /* Improved box styling for panels */
+  .panel-box {
+    @apply bg-background/80 backdrop-blur-sm rounded-xl border border-primary/10 shadow-sm;
+  }
+
+  /* Improved panel header styling */
+  .panel-header {
+    @apply p-2 bg-gradient-to-b from-background/90 to-transparent border-b border-primary/10;
+  }
+
+  /* Improved sidebar styling */
+  .sidebar-container {
+    position: fixed;
+    z-index: 40;
+    height: 100vh;
+    @apply h-full bg-background/80 border-r border-primary/10 transition-all duration-300;
+  }
+
+  /* Improved input styling */
+  .modern-input {
+    @apply rounded-full border-primary/20 focus-visible:ring-primary/30 shadow-sm text-xs font-user;
+  }
+
+  /* Improved button styling */
+  .modern-button {
+    @apply rounded-full bg-primary hover:bg-primary/90 shadow-sm transition-all duration-200;
+  }
+
+  .glow-text {
+    transition: color 0.2s ease;
+  }
+
+  .glow-text:hover {
+    color: hsl(var(--primary));
+  }
+
+  .font-ai {
+    font-family: var(--font-mono);
+  }
+
+  .font-user {
+    font-family: var(--font-inter);
+  }
+
+  /* Custom cursor styles */
+  .custom-cursor {
+    cursor: default;
+  }
+
+  /* Text highlighting styles */
+  .ai-text-highlight {
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .ai-text-highlight:hover {
+    background-color: rgba(var(--primary-rgb), 0.1);
+    border-radius: 4px;
+  }
+
+  .ai-text-highlight.highlighted {
+    background-color: rgba(var(--primary-rgb), 0.15);
+    border-radius: 4px;
+    padding: 0 2px;
+  }
+
+  /* Context menu styles */
+  .context-menu {
+    position: absolute;
+    background-color: hsl(var(--background));
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 0.4rem;
+    z-index: 50;
+    min-width: 150px;
+    font-size: 0.65rem;
+  }
+
+  .context-menu-item {
+    padding: 0.35rem 0.5rem;
+    border-radius: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .context-menu-item:hover {
+    background-color: rgba(var(--primary-rgb), 0.1);
+  }
+
+  /* Full screen mode */
+  .fullscreen-agent {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 100;
+    background-color: hsl(var(--background));
+  }
+
+  .ai-message-bubble {
+    border-radius: 1.2rem;
+    padding: 0.75rem 1rem;
+    background-color: hsl(var(--secondary));
+    box-shadow: 0 2px 8px rgba(var(--primary-rgb), 0.05);
+    transition: all 0.2s ease;
+    border: none;
+  }
+
+  .ai-text-highlight {
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .ai-text-highlight.highlighted {
+    background-color: rgba(var(--primary-rgb), 0.15);
+    border-radius: 4px;
+    padding: 0 2px;
+  }
+
+  /* Custom scrollbar styling */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 12px; /* Increased from 10px to 12px to make it thicker */
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: rgba(var(--primary), 0.15);
+    border-radius: 20px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+    height: 40%; /* Make the scrollbar even shorter */
+    margin-top: 20%; /* Keep top margin */
+    margin-bottom: 40%; /* Increase bottom margin to reduce height from bottom */
+  }
+
+  /* Specific styling for messages container scrollbar */
+  .messages-container::-webkit-scrollbar-thumb {
+    height: 35%; /* Even shorter for messages container */
+    margin-top: 15%;
+    margin-bottom: 50%; /* Significantly reduce height from bottom */
+    background-color: rgba(var(--primary), 0.2); /* Slightly darker for better visibility */
+  }
+
+  .agent-messages-container::-webkit-scrollbar-thumb {
+    height: 35%; /* Match the messages container */
+    margin-top: 15%;
+    margin-bottom: 50%; /* Significantly reduce height from bottom */
+    background-color: rgba(var(--primary), 0.2);
+  }
+
+  /* For Firefox */
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--primary) / 0.2) transparent;
+  }
+
+  /* Connected message styles */
+  .messages-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .message-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    margin-bottom: 0.5rem;
+  }
+
+  .message-group .message:first-child {
+    border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+  }
+
+  .message-group .message:not(:first-child):not(:last-child) {
+    border-radius: 0.5rem;
+  }
+
+  .message-group .message:last-child {
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+  }
+
+  .message-group .message:only-child {
+    border-radius: 1rem;
+  }
+
+  /* Theme selector styles */
+  .theme-selector {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: hsl(var(--background));
+    border: 1px solid hsl(var(--border));
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 50;
+    min-width: 150px;
+    font-size: 0.65rem;
+  }
+
+  .theme-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.5rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .theme-option:hover {
+    background-color: hsl(var(--primary) / 0.1);
+  }
+
+  .theme-color {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    border: 1px solid hsl(var(--border));
+  }
+
+  /* Add glow effect for sidebar icons */
+  .icon-glow {
+    transition: all 0.3s ease;
+  }
+
+  .icon-glow:hover {
+    color: hsl(var(--primary));
+    filter: drop-shadow(0 0 3px hsl(var(--primary) / 0.5));
+    transform: scale(1.05);
+  }
+
+  /* Input vanish animation */
+  @keyframes slideIn {
+    from {
+      transform: translateY(10px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideOut {
+    from {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateY(-10px);
+      opacity: 0;
+    }
+  }
+
+  .input-vanish {
+    animation: slideIn 0.3s ease forwards;
+  }
+
+  .input-vanish.submitting {
+    animation: slideOut 0.3s ease forwards;
+  }
+
+  /* Placeholder animation */
+  .input-container {
+    position: relative;
+  }
+
+  .animated-placeholder {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    transition: all 0.2s ease;
+    color: hsl(var(--primary) / 0.5);
+    font-size: 11px;
+  }
+
+  .input-focus .animated-placeholder,
+  .input-has-value .animated-placeholder {
+    top: 0;
+    left: 0.5rem;
+    font-size: 8px;
+    opacity: 0.7;
+  }
+
+  /* Top navigation bar */
+  .top-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    display: flex;
+    justify-content: center;
+    padding: 0.75rem 1rem;
+    background: linear-gradient(to bottom, hsl(var(--background) / 0.95), hsl(var(--background) / 0.85));
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid hsl(var(--border) / 0.15);
+  }
+
+  /* Fixed input bar at bottom */
+  .fixed-input-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0.75rem 1rem;
+    background: linear-gradient(to top, hsl(var(--background) / 0.95), hsl(var(--background) / 0.85));
+    backdrop-filter: blur(8px);
+    border-top: 1px solid hsl(var(--border) / 0.15);
+    z-index: 50;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* Enhanced input styling */
+  .enhanced-input {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .enhanced-input::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to right, hsl(var(--primary) / 0.05), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    border-radius: inherit;
+  }
+
+  .enhanced-input:hover::before,
+  .enhanced-input:focus-within::before {
+    opacity: 1;
+  }
+
+  /* Pulse animation for send button */
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 hsl(var(--primary) / 0.7);
+    }
+    70% {
+      box-shadow: 0 0 0 6px hsl(var(--primary) / 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 hsl(var(--primary) / 0);
+    }
+  }
+
+  .pulse-animation {
+    animation: pulse 2s infinite;
+  }
+
+  /* Book layout styling */
+  .book-layout {
+    position: relative;
+    background-image: linear-gradient(to right, rgba(var(--primary-rgb), 0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(var(--primary-rgb), 0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
+    background-position: 0 0;
+  }
+
+  .book-welcome {
+    position: relative;
+    background-image: linear-gradient(to right, rgba(var(--primary-rgb), 0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(var(--primary-rgb), 0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
+    background-position: 0 0;
+  }
+
+  /* Add this to the @layer components section to ensure the message text doesn't shift on the right side */
+  .message {
+    position: relative;
+    margin-left: 1rem;
+    margin-right: 0.25rem; /* Reduced from 0.5rem to allow more space */
+    border-left: 2px solid rgba(var(--primary-rgb), 0.1);
+    padding-left: 0.75rem;
+    padding-right: 0.5rem; /* Reduced from 0.75rem */
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Also add this to ensure the text container has proper width behavior */
+  .messages-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-bottom: 80px;
+    box-sizing: border-box;
+  }
+
+  /* Add this CSS rule to ensure the message content doesn't reflow */
+
+  /* Ensure message content doesn't reflow when sidebar changes */
+  .message-content {
+    width: 100%;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  /* Ensure the message container has a fixed width */
+  .message {
+    position: relative;
+    margin-left: 1rem;
+    margin-right: 0.25rem; /* Reduced from 0.5rem to allow more space */
+    border-left: 2px solid rgba(var(--primary-rgb), 0.1);
+    padding-left: 0.75rem;
+    padding-right: 0.5rem; /* Reduced from 0.75rem */
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+/* Interactive text styles */
+.interactive-text {
+  position: relative;
+  cursor: text;
+}
+
+.interactive-text:hover {
+  background-color: transparent;
+  border-radius: 4px;
+}
+
+/* Remove the underline animation */
+.interactive-text::after {
+  content: none;
+}
+
+/* Colorful word hover effect for words */
+.colorful-word {
+  display: inline;
+  transition: color 0.3s ease;
+  margin-right: 0;
+  color: hsl(var(--foreground)) !important;
+  position: relative;
+  z-index: 1;
+  letter-spacing: -0.015em !important;
+  word-spacing: normal !important;
+}
+
+.colorful-word:hover {
+  background: linear-gradient(
+    90deg,
+    rgb(131, 179, 32),
+    rgb(47, 195, 106),
+    rgb(42, 169, 210),
+    rgb(4, 112, 202),
+    rgb(107, 10, 255),
+    rgb(183, 0, 218),
+    rgb(218, 0, 171),
+    rgb(230, 64, 92),
+    rgb(232, 98, 63),
+    rgb(249, 129, 47)
+  );
+  background-size: 1000% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  animation: gradientShift 3s ease infinite;
+  /* Each word will have a different animation delay based on its position */
+  animation-delay: calc(var(--word-index, 0) * -0.3s);
+}
+
+/* Make every nth word start at a different position in the gradient */
+.colorful-word:nth-child(1n):hover {
+  --word-index: 0;
+}
+.colorful-word:nth-child(2n):hover {
+  --word-index: 1;
+}
+.colorful-word:nth-child(3n):hover {
+  --word-index: 2;
+}
+.colorful-word:nth-child(4n):hover {
+  --word-index: 3;
+}
+.colorful-word:nth-child(5n):hover {
+  --word-index: 4;
+}
+.colorful-word:nth-child(6n):hover {
+  --word-index: 5;
+}
+.colorful-word:nth-child(7n):hover {
+  --word-index: 6;
+}
+.colorful-word:nth-child(8n):hover {
+  --word-index: 7;
+}
+.colorful-word:nth-child(9n):hover {
+  --word-index: 8;
+}
+.colorful-word:nth-child(10n):hover {
+  --word-index: 9;
+}
+
+/* Make sure the gradientShift animation is defined */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Ensure highlighted text is continuous */
+.temp-highlight {
+  background-color: rgba(var(--primary-rgb), 0.2);
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+  padding: 0 2px;
+  margin: 0 -2px;
+  white-space: pre-wrap;
+  letter-spacing: -0.015em !important;
+  word-spacing: normal !important;
+}
+
+/* Copy success animation */
+.copy-success {
+  animation: flash-success 0.5s ease;
+}
+
+@keyframes flash-success {
+  0%,
+  100% {
+    background-color: transparent;
+  }
+  50% {
+    background-color: rgba(var(--primary-rgb), 0.2);
+  }
+}
+
+/* Draggable card styles */
+.draggable-card {
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+
+.draggable-card:active {
+  cursor: grabbing;
+}
+
+/* Add word-by-word animation styles */
+.word-by-word-animation {
+  white-space: pre-wrap;
+  letter-spacing: -0.015em !important;
+  word-spacing: normal !important;
+}
+
+.word-by-word-animation .colorful-word {
+  display: inline;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+  white-space: pre-wrap;
+  letter-spacing: -0.015em !important;
+  word-spacing: normal !important;
+  margin-right: 0.25em !important;
+}
+
+/* Apply word-by-word animation to highlight card text */
+.highlight-text {
+  cursor: default;
+}
+
+.highlight-text span {
+  display: inline-block;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+.highlight-text span:hover {
+  background: linear-gradient(
+    90deg,
+    rgb(131, 179, 32),
+    rgb(47, 195, 106),
+    rgb(42, 169, 210),
+    rgb(4, 112, 202),
+    rgb(107, 10, 255),
+    rgb(183, 0, 218),
+    rgb(218, 0, 171),
+    rgb(230, 64, 92),
+    rgb(232, 98, 63),
+    rgb(249, 129, 47)
+  );
+  background-size: 1000% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradientShift 3s ease infinite;
+}
+
+/* Colorful highlight for highlight card */
+.colorful-highlight {
+  position: relative;
+  transition: all 0.3s ease;
+  border-radius: 4px;
+  padding: 2px 4px;
+  background-color: rgba(var(--primary-rgb), 0.08);
+}
+
+.colorful-highlight:hover {
+  background-color: rgba(79, 70, 229, 0.1);
+}
+
+/* Colorful text */
+.colorful-text {
+  display: inline;
+  transition: color 0.3s ease;
+  letter-spacing: -0.015em !important;
+  word-spacing: normal !important;
+}
+
+.colorful-text:hover {
+  background: linear-gradient(
+    90deg,
+    rgb(131, 179, 32),
+    rgb(47, 195, 106),
+    rgb(42, 169, 210),
+    rgb(4, 112, 202),
+    rgb(107, 10, 255),
+    rgb(183, 0, 218),
+    rgb(218, 0, 171),
+    rgb(230, 64, 92),
+    rgb(232, 98, 63),
+    rgb(249, 129, 47)
+  );
+  background-size: 1000% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  animation: gradientShift 3s ease infinite;
+}
+
+/* Add book-like margin styling for messages */
+.message {
+  position: relative;
+  margin-left: 1rem;
+  margin-right: 0.25rem; /* Reduced from 0.5rem to allow more space */
+  border-left: 2px solid rgba(var(--primary-rgb), 0.1);
+  padding-left: 0.75rem;
+}
+
+/* Adjust sidebar width and search input */
+.sidebar-container {
+  width: 12rem;
+}
+
+.sidebar-search {
+  width: 80%;
+  margin-left: 0.5rem;
+}
+
+/* Ensure proper spacing at the bottom of scrollable containers */
+.messages-container {
+  padding-bottom: 80px; /* Add extra padding at the bottom */
+}
+
+/* Ensure the input is always visible */
+.input-container {
+  position: relative;
+  z-index: 100;
+}
+
+/* Modify the highlight card styling to ensure continuous highlighting */
+.highlight-item {
+  position: relative;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.highlight-item .colorful-text {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Custom scrollbar for sidebar */
+.sidebar-scroll::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: hsl(var(--sidebar-accent));
+  border-radius: 10px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.4);
+}
+
+/* For Firefox */
+.sidebar-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--sidebar-accent)) transparent;
+}
+
+/* Position the scrollbar at the right edge of the sidebar */
+.sidebar-scroll {
+  position: relative;
+}
+
+.sidebar-scroll::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 4px;
+  height: 100%;
+  background: transparent;
+  pointer-events: none;
+}
+
+/* Increase font sizes for better visibility */
+.text-xs {
+  font-size: 0.85rem !important; /* Increased from 0.75rem */
+  line-height: 1.2rem !important;
+}
+
+.text-[10px] {
+  font-size: 0.75rem !important; /* Increased from 0.625rem */
+  line-height: 1.1rem !important;
+}
+
+.text-[11px] {
+  font-size: 0.8125rem !important; /* Increased from 0.6875rem */
+  line-height: 1.25rem !important;
+}
+
+.text-[8px] {
+  font-size: 0.65rem !important; /* Increased from 0.5rem */
+  line-height: 1rem !important;
+}
+
+/* Increase padding and margins for better spacing */
+.p-2 {
+  padding: 0.625rem !important; /* Increased from 0.5rem */
+}
+\
+.p-2.5 {
+  padding: 0.75rem !important; /* Increased from 0.625rem */
+}
+
+.mb-2 {
+  margin-bottom: 0.625rem !important; /* Increased from 0.5rem */
+}
+
+/* Make the input box more prominent */
+.fixed-input-bar form {
+  width: 60% !important; /* Increased from 50% */
+  max-width: 600px !important; /* Increased from 500px */
+}
+
+.fixed-input-bar .h-8 {
+  height: 2.25rem !important; /* Increased from 2rem */
+}
+
+/* Increase icon sizes */ \
+.h-3.5, .w-3.5 {
+  height: 1rem !important;
+  width: 1rem !important;
+}
+
+.h-4,
+.w-4 {
+  height: 1.125rem !important;
+  width: 1.125rem !important;
+}
+
+/* Increase container sizes */
+.graph-container {
+  width: 25% !important; /* Reduced from 27% or 35% */
+}
+
+/* Ensure message content doesn't reflow */
+.message-content {
+  width: 100%;
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  overflow-x: hidden !important;
+  padding-left: 17px !important;
+  padding-right: 17px !important;
+}
+
+/* Ensure the message container has a fixed width */
+.message {
+  position: relative;
+  margin-left: 1rem;
+  margin-right: 0.25rem; /* Reduced from 0.5rem to allow more space */
+  border-left: 2px solid rgba(var(--primary-rgb), 0.1);
+  padding-left: 0.75rem;
+  padding-right: 0.5rem; /* Reduced from 0.75rem */
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+/* Fix alignment between input and output text */
+.fixed-input-bar form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  transition: all 0.3s ease;
+}
+
+/* Ensure input and message containers align */
+.messages-container,
+.fixed-input-bar form {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 100%;
+  transition: all 0.3s ease;
+}
+
+/* Ensure the sidebar doesn't affect content layout */
+.sidebar-container {
+  position: fixed;
+  z-index: 40;
+  height: 100vh;
+}
+
+/* Ensure input and message containers have consistent padding */
+.messages-container,
+.fixed-input-bar form {
+  padding-left: var(--content-padding-left, 40px);
+  padding-right: var(--content-padding-right, 200px); /* Reduced from 340px */
+  transition: padding 0.3s ease;
+  width: 100%;
+  max-width: 1800px;
+  margin: 0 auto;
+}
+
+/* Ensure proper spacing between main content and right panels */
+.messages-container {
+  padding-right: 100px !important; /* Reduced from 340px to push text more to the right */
+}
+
+/* Ensure consistent alignment for all AI responses */
+.message {
+  position: relative;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  border-left: 2px solid rgba(var(--primary-rgb), 0.1);
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+/* Ensure agent interpretation panel properly wraps text */
+.agent-interpretation {
+  overflow-x: hidden !important;
+}
+
+.agent-interpretation .colorful-word,
+.agent-interpretation .word-by-word-animation {
+  white-space: normal !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  overflow-x: hidden !important;
+  width: 100% !important;
+  display: inline-block;
+}
+
+/* Ensure consistent styling between main UI and agent interpretation */
+.agent-interpretation .message-content,
+.agent-interpretation .colorful-word,
+.agent-interpretation .word-by-word-animation {
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  overflow-x: hidden !important;
+  width: 100% !important;
+  padding-left: 17px !important;
+  padding-right: 17px !important;
+  font-size: 16px !important;
+  line-height: 1.5 !important;
+  font-family: var(--font-mono) !important;
+  font-weight: 300 !important;
+}
+
+/* Ensure agent interpretation messages have the same styling as main chat messages */
+.agent-interpretation .flex-1 > div {
+  margin-bottom: 1rem;
+  padding-left: 1rem;
+  border-left: 2px solid rgba(var(--primary-rgb), 0.1);
+}
+
+/* Ensure consistent text color and hover effects */
+.agent-interpretation .colorful-word {
+  color: hsl(var(--foreground)) !important;
+  transition: color 0.3s ease;
+}
+
+.agent-interpretation .colorful-word:hover {
+  background: linear-gradient(
+    90deg,
+    rgb(131, 179, 32),
+    rgb(47, 195, 106),
+    rgb(42, 169, 210),
+    rgb(4, 112, 202),
+    rgb(107, 10, 255),
+    rgb(183, 0, 218),
+    rgb(218, 0, 171),
+    rgb(230, 64, 92),
+    rgb(232, 98, 63),
+    rgb(249, 129, 47)
+  );
+  background-size: 1000% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  animation: gradientShift 3s ease infinite;
+}
+
+/* Optimize text rendering performance */
+.message-content,
+.word-by-word-animation,
+.colorful-word,
+.agent-interpretation {
+  contain: content;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 500px;
+}
+
+/* Optimize large text rendering */
+.large-text-optimized {
+  animation: none !important;
+  transition: none !important;
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  contain: content;
+  content-visibility: auto;
+}
+
+/* Disable hover effects for large text to improve performance */
+.large-text-optimized .colorful-word:hover {
+  background: none !important;
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+  animation: none !important;
+}
+
+/* Optimize rendering for agent interpretation panel */
+.agent-interpretation {
+  contain: content;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 300px;
+}
+
+/* Ensure consistent performance between main UI and agent interpretation */
+.agent-interpretation .message-content,
+.agent-interpretation .colorful-word,
+.agent-interpretation .word-by-word-animation,
+.messages-container .message-content,
+.messages-container .colorful-word,
+.messages-container .word-by-word-animation {
+  contain: content;
+  content-visibility: auto;
+}
+
+/* Ensure consistent message styling across all views */
+.message {
+  position: relative;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  border-left: 2px solid rgba(var(--primary-rgb), 0.1);
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+/* Ensure consistent message content styling */
+.message-content {
+  padding-left: 17px !important;
+  padding-right: 17px !important;
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  overflow-x: hidden !important;
+  width: 100% !important;
+  display: block;
+  font-size: 18px !important;
+  line-height: 1.5 !important;
+  text-align: left !important;
+}
+
+/* Ensure agent interpretation panel matches main UI styling */
+.agent-interpretation .message-content,
+.agent-interpretation .colorful-word,
+.agent-interpretation .word-by-word-animation {
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  overflow-x: hidden !important;
+  width: 100% !important;
+  padding-left: 17px !important;
+  padding-right: 17px !important;
+  font-size: 18px !important;
+  line-height: 1.5 !important;
+  font-family: var(--font-mono) !important;
+  font-weight: 300 !important;
+}
+
+/* Ensure consistent input bar styling across views */
+.fixed-input-bar form {
+  width: 100% !important;
+  max-width: 1800px !important;
+  margin: 0 auto;
+  padding-left: var(--content-padding-left, 40px);
+  padding-right: var(--content-padding-right, 200px); /* Reduced from 340px */
+  transition: padding 0.3s ease;
+}
+
+/* Ensure consistent message container styling */
+.messages-container {
+  width: 100%;
+  max-width: 1800px;
+  margin: 0 auto;
+  padding-left: var(--content-padding-left, 40px);
+  padding-right: var(--content-padding-right, 200px); /* Reduced from 340px */
+  transition: padding 0.3s ease;
+  padding-bottom: 80px;
+}
+
+/* Fix agent interpretation panel styling to match main UI */
+.agent-interpretation {
+  border: 1px solid rgba(var(--primary-rgb), 0.15) !important;
+  border-radius: 0.75rem !important;
+  overflow: hidden !important;
+  background-color: hsl(var(--background) / 0.8) !important;
+  backdrop-filter: blur(8px) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Ensure agent interpretation header matches main UI */
+.agent-interpretation > div:first-child {
+  padding: 0.375rem !important;
+  background: linear-gradient(to bottom, hsl(var(--background) / 0.9), transparent) !important;
+  border-bottom: 1px solid rgba(var(--primary-rgb), 0.1) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+/* Ensure agent interpretation content area matches main UI */
+.agent-interpretation > div:last-child {
+  flex: 1 !important;
+  padding: 0.5rem !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+/* Ensure consistent button behavior */
+button {
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Prevent double-click issues */
+.icon-glow {
+  pointer-events: auto;
+}
+
+/* Make the agent interpretation view's components visually identical to main UI */
+.agent-view .graph-container > div:first-child,
+.graph-container > div:first-child {
+  height: 40% !important;
+  margin-bottom: 0.625rem !important;
+  margin-top: 0 !important;
+  background-color: hsl(var(--background) / 0.8) !important;
+  backdrop-filter: blur(8px) !important;
+  border-radius: 0.75rem !important;
+  border: 1px solid rgba(var(--primary-rgb), 0.1) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+  overflow: hidden !important;
+}
+
+/* Ensure headers are identical */
+.agent-view .graph-container > div:first-child > div:first-child,
+.graph-container > div:first-child > div:first-child {
+  padding: 0.375rem !important;
+  background: linear-gradient(to bottom, hsl(var(--background) / 0.9), transparent) !important;
+  border-bottom: 1px solid rgba(var(--primary-rgb), 0.1) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+/* Ensure content areas are identical */
+.agent-view .graph-container > div:first-child > div:last-child,
+.graph-container > div:first-child > div:last-child {
+  padding: 0.625rem !important;
+  height: calc(100% - 2.5rem) !important;
+}
+
+/* Ensure agent interpretation panels are identical */
+.agent-view .graph-container > div:last-child,
+.graph-container > div:last-child {
+  flex: 1 !important;
+  border: 1px solid rgba(var(--primary-rgb), 0.15) !important;
+  border-radius: 0.75rem !important;
+  overflow: hidden !important;
+  background-color: hsl(var(--background) / 0.8) !important;
+  backdrop-filter: blur(8px) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+  margin-bottom: 2rem !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* Ensure agent interpretation headers are identical */
+.agent-view .graph-container > div:last-child > div:first-child,
+.graph-container > div:last-child > div:first-child {
+  padding: 0.375rem !important;
+  background: linear-gradient(to bottom, hsl(var(--background) / 0.9), transparent) !important;
+  border-bottom: 1px solid rgba(var(--primary-rgb), 0.1) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+/* Ensure agent interpretation content areas are identical */
+.agent-view .graph-container > div:last-child > div:last-child,
+.graph-container > div:last-child > div:last-child {
+  flex: 1 !important;
+  padding: 0.75rem !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+/* Ensure input fields have consistent styling */
+.graph-container input {
+  border: none !important;
+  box-shadow: none !important;
+  background-color: transparent !important;
+  font-size: 16px !important;
+  font-family: var(--font-inter) !important;
+  height: 2.75rem !important;
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+  width: 100% !important;
+  transition: all 0.3s ease !important;
+}
+
+/* Fix double border issue in agent interpretation components */
+.graph-container .bg-background\/50 {
+  background-color: hsl(var(--background) / 0.5) !important;
+  border-radius: 0.5rem !important;
+  border: none !important; /* Remove inner border */
+  padding: 0.5rem !important;
+  height: calc(100% - 1rem) !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* Ensure consistent vertical alignment between views */
+.graph-container {
+  width: 25% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 0.625rem !important;
+  margin-top: -8px !important; /* Adjust vertical position to match main UI */
+  padding-bottom: 5rem !important;
+  margin-right: 1.25rem !important;
+  overflow-y: hidden !important; /* Prevent unwanted scrollbars */
+}
+
+/* Ensure input field takes full height in the container */
+.graph-container input {
+  border: none !important;
+  box-shadow: none !important;
+  background-color: transparent !important;
+  font-size: 16px !important;
+  font-family: var(--font-inter) !important;
+  height: 100% !important; /* Take full height of container */
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+  width: 100% !important;
+  transition: all 0.3s ease !important;
+}
+
+/* Ensure consistent styling between main UI and agent interpretation components */
+.agent-view .graph-container > div:first-child,
+.graph-container > div:first-child {
+  height: 40% !important;
+  margin-bottom: 0.625rem !important;
+  margin-top: 0 !important;
+  background-color: hsl(var(--background) / 0.8) !important;
+  backdrop-filter: blur(8px) !important;
+  border-radius: 0.75rem !important;
+  border: 1px solid rgba(var(--primary-rgb), 0.1) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+  overflow: hidden !important;
+}
+
+/* Ensure consistent vertical alignment in both views */
+.home-view .graph-container,
+.agent-view .graph-container {
+  margin-top: -8px !important;
+}
+
+/* Ensure consistent scrollbar styling across all views */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary) / 0.2);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.4);
+}
+
+/* For Firefox */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--primary) / 0.2) transparent;
+}
+
+/* Ensure consistent component alignment between views */
+.graph-container {
+  width: 25% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 0.625rem !important;
+  margin-top: -8px !important; /* Consistent negative margin-top */
+  padding-bottom: 5rem !important;
+  margin-right: 1.25rem !important;
+  overflow-y: hidden !important; /* Prevent unwanted scrollbars */
+}
+
+/* Ensure consistent content area styling */
+.agent-interpretation > div:last-child,
+.graph-container > div:last-child > div:last-child {
+  flex: 1 !important;
+  padding: 0.75rem !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: hsl(var(--primary) / 0.2) transparent !important;
+}
+
+/* Ensure consistent input field container styling */
+.graph-container > div:first-child > div:last-child {
+  padding: 0.625rem !important;
+  height: calc(100% - 2.5rem) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Fix for multiple scrollbars in agent interpretation view */
+.agent-interpretation .message,
+.agent-interpretation .message-content {
+  overflow-y: visible !important;
+  overflow-x: visible !important;
+  max-height: none !important;
+}
+
+/* Ensure single scrollbar for agent interpretation view */
+.agent-interpretation > div:last-child {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+/* Remove individual scrollbars from agent messages */
+.agent-view .messages-container .message {
+  overflow: visible !important;
+  max-height: none !important;
+}
+
+/* Ensure the agent view has only one main scrollbar */
+.agent-view .messages-container {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+/* Ensure text alignment is consistent between views */
+.agent-interpretation .message-content,
+.messages-container .message-content {
+  padding-left: 17px !important;
+  padding-right: 17px !important;
+  text-align: left !important;
+}
+
+/* Ensure right-side components are perfectly aligned */
+.graph-container {
+  position: relative !important;
+  right: 0 !important;
+  top: 0 !important;
+}
+
+/* Add prose-like styling for better text readability */
+.prose-like {
+  line-height: 1.6 !important;
+  letter-spacing: -0.015em !important;
+  text-align: left !important;
+}
+
+.prose-like p {
+  margin-bottom: 0.75em !important;
+}
+
+.prose-like p:first-of-type {
+  text-indent: 0 !important;
+}
+
+.prose-like h1,
+.prose-like h2,
+.prose-like h3,
+.prose-like h4 {
+  margin-top: 1.5em !important;
+  margin-bottom: 0.75em !important;
+  font-weight: 600 !important;
+  line-height: 1.3 !important;
+}
+
+.prose-like h1 {
+  font-size: 1.5em !important;
+}
+
+.prose-like h2 {
+  font-size: 1.3em !important;
+}
+
+.prose-like h3 {
+  font-size: 1.1em !important;
+}
+
+.prose-like ul,
+.prose-like ol {
+  margin-top: 0.5em !important;
+  margin-bottom: 1em !important;
+  padding-left: 1.5em !important;
+}
+
+.prose-like li {
+  margin-bottom: 0.5em !important;
+}
+
+.prose-like blockquote {
+  border-left: 3px solid rgba(var(--primary-rgb), 0.3) !important;
+  padding-left: 1em !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  font-style: italic !important;
+}
+
+.prose-like code {
+  font-family: var(--font-mono) !important;
+  font-size: 0.9em !important;
+  background-color: rgba(var(--primary-rgb), 0.05) !important;
+  padding: 0.2em 0.4em !important;
+  border-radius: 3px !important;
+}
+
+.prose-like pre {
+  background-color: rgba(var(--primary-rgb), 0.05) !important;
+  padding: 1em !important;
+  border-radius: 5px !important;
+  overflow-x: auto !important;
+  margin: 1em 0 !important;
+}
+
+.prose-like pre code {
+  background-color: transparent !important;
+  padding: 0 !important;
+}
+
+.prose-like a {
+  color: hsl(var(--primary)) !important;
+  text-decoration: underline !important;
+  text-decoration-thickness: 1px !important;
+  text-underline-offset: 2px !important;
+  transition: all 0.2s ease !important;
+}
+
+.prose-like a:hover {
+  text-decoration-thickness: 2px !important;
+}
+
+.prose-like .paragraph {
+  margin-bottom: 1em !important;
+}
+
+.prose-like .paragraph:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* Ensure proper paragraph spacing in message content */
+.message-content p {
+  margin-bottom: 1em !important;
+}
+
+.message-content p:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* Add proper spacing between paragraphs in agent interpretation */
+.agent-interpretation .message-content p,
+.graph-container .message-content p {
+  margin-bottom: 1em !important;
+}
+
+/* Ensure consistent paragraph styling across all views */
+.message-content,
+.agent-interpretation .message-content,
+.graph-container .message-content {
+  padding-left: 17px !important;
+  padding-right: 17px !important;
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  overflow-x: hidden !important;
+  width: 100% !important;
+  display: block;
+  font-size: 18px !important;
+  line-height: 1.6 !important;
+  text-align: left !important;
+  letter-spacing: -0.015em !important;
+  word-spacing: normal !important;
+}
+
+/* Add proper text formatting for lists */
+.message-content ul,
+.message-content ol,
+.agent-interpretation .message-content ul,
+.agent-interpretation .message-content ol {
+  padding-left: 1.5em !important;
+  margin-bottom: 1em !important;
+}
+
+.message-content li,
+.agent-interpretation .message-content li {
+  margin-bottom: 0.5em !important;
+}
+
+/* Add proper spacing for headings */
+.message-content h1,
+.message-content h2,
+.message-content h3,
+.message-content h4,
+.agent-interpretation .message-content h1,
+.agent-interpretation .message-content h2,
+.agent-interpretation .message-content h3,
+.agent-interpretation .message-content h4 {
+  margin-top: 1.5em !important;
+  margin-bottom: 0.75em !important;
+  font-weight: 600 !important;
+}
+
+/* Add proper styling for blockquotes */
+.message-content blockquote,
+.agent-interpretation .message-content blockquote {
+  border-left: 3px solid rgba(var(--primary-rgb), 0.3) !important;
+  padding-left: 1em !important;
+  margin: 1em 0 !important;
+  font-style: italic !important;
+}
+
+/* Add proper styling for code blocks */
+.message-content code,
+.agent-interpretation .message-content code {
+  font-family: var(--font-mono) !important;
+  font-size: 0.9em !important;
+  background-color: rgba(var(--primary-rgb), 0.05) !important;
+  padding: 0.2em 0.4em !important;
+  border-radius: 3px !important;
+}
+
+.message-content pre,
+.agent-interpretation .message-content pre {
+  background-color: rgba(var(--primary-rgb), 0.05) !important;
+  padding: 1em !important;
+  border-radius: 5px !important;
+  overflow-x: auto !important;
+  margin: 1em 0 !important;
+}
+
+.message-content pre code,
+.agent-interpretation .message-content pre code {
+  background-color: transparent !important;
+  padding: 0 !important;
+}
+
+/* Ensure the message-content class doesn't override the colorful word effect */
+.message-content .colorful-word {
+  display: inline-block;
+  transition: color 0.3s ease;
+  margin-right: 0;
+  color: hsl(var(--foreground)) !important;
+  position: relative;
+  z-index: 1;
+}
+
+/* Smooth transition for right panel collapse */
+.graph-container {
+  transition: width 0.3s ease, opacity 0.3s ease, margin-right 0.3s ease !important;
+}
+
+/* Right panel toggle button styling */
+.right-panel-toggle {
+  transition: transform 0.3s ease;
+}
+
+.right-panel-toggle.open {
+  transform: rotate(180deg);
+}
+
+/* Ensure content expands properly when right panel is collapsed */
+.messages-container.expanded {
+  padding-right: 40px !important;
+}
+
+/* Remove red line margin in agent interpretation view */
+.agent-message {
+  border-left: none !important;
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
+
+.agent-message-content {
+  border-left: none !important;
+  margin-left: 0 !important;
+  padding-left: 17px !important;
+}
+
+/* Ensure input doesn't shrink when sidebar is collapsed */
+.fixed-input-bar form {
+  min-width: 300px !important;
+}
+
+/* Ensure consistent button sizing */
+.fixed-input-bar button[type="submit"] {
+  min-width: 2rem !important;
+  min-height: 2rem !important;
+}
+
+/* Ensure input field maintains size */
+.fixed-input-bar input {
+  min-width: 250px !important;
+}
+
+/* Add these styles to fix the padding and spacing issues */
+
+/* Ensure proper spacing at the bottom of scrollable containers */
+.messages-container {
+  padding-bottom: 120px !important; /* Increased from 80px for better spacing at bottom */
+  overflow-y: auto !important;
+}
+
+/* Ensure proper spacing between messages */
+.message-group {
+  margin-bottom: 1rem !important; /* Increased from 0.5rem */
+}
+
+/* Improve spacing in AI responses */
+.message-content {
+  padding-top: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
+  line-height: 1.6 !important;
+}
+
+/* Fix alignment with scrollbar */
+.custom-scrollbar {
+  padding-right: 0.5rem !important;
+  margin-right: -0.5rem !important;
+}
+
+/* Ensure the fixed input bar doesn't overlap with content */
+.fixed-input-bar {
+  padding: 0.75rem 1rem 1rem !important; /* Added more bottom padding */
+  background: linear-gradient(
+    to top,
+    hsl(var(--background)),
+    hsl(var(--background) / 0.95) 40%,
+    hsl(var(--background) / 0.85)
+  ) !important;
+  backdrop-filter: blur(8px) !important;
+  border-top: 1px solid hsl(var(--border) / 0.15) !important;
+  z-index: 50 !important;
+}
+
+/* Center calendar and settings views */
+.calendar-view,
+.settings-view {
+  margin: 0 auto !important;
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+/* Ensure proper spacing in agent interpretation view */
+.agent-message {
+  margin-bottom: 1.5rem !important;
+  padding-bottom: 1.5rem !important;
+}
+
+/* Improve spacing in agent interpretation content */
+.agent-interpretation .message-content,
+.graph-container .message-content {
+  padding-top: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
+  margin-bottom: 1rem !important;
+}
+
+/* Fix alignment issues with the right panel toggle */
+.right-panel-toggle {
+  z-index: 50 !important;
+}
+
+/* Ensure content is properly centered when panels are collapsed */
+.messages-container.centered {
+  margin: 0 auto !important;
+  max-width: 1200px !important; /* Limit width when both panels are collapsed */
+}
+
+/*
+Ensure scrollbar is visible in the messages container */
+.messages-container {
+  overflow-y: auto !important;
+  padding-bottom: 120px !important; /* Increased from 80px for better spacing at bottom */
+}
+
+/* Ensure custom scrollbar styling is applied */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  display: block !important;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary) / 0.2);
+  border-radius: 10px;
+  display: block !important;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.4);
+}
+
+/* For Firefox */
+.custom-scrollbar {
+  scrollbar-width: thin !important;
+  scrollbar-color: hsl(var(--primary) / 0.2) transparent !important;
+}
+
+/* Adjust input bar width */
+.fixed-input-bar form {
+  width: 100% !important;
+  max-width: 1800px !important;
+  margin: 0 auto;
+}
+
+/* Ensure the input container doesn't expand beyond its max-width */
+.fixed-input-bar .input-container {
+  max-width: 300px !important;
+  flex-grow: 0 !important;
+}
+
+/* Add these styles to ensure the scrollbar is always visible in the main messages container */
+
+/* Make scrollbar always visible in the messages container */
+.messages-container::-webkit-scrollbar {
+  width: 5px;
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.messages-container::-webkit-scrollbar-track {
+  background: transparent;
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.messages-container::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary) / 0.2);
+  border-radius: 10px;
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.messages-container::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.4);
+}
+
+/* For Firefox */
+.messages-container {
+  scrollbar-width: thin !important;
+  scrollbar-color: hsl(var(--primary) / 0.2) transparent !important;
+}
+
+/* Ensure the scrollbar doesn't disappear when not hovering */
+.messages-container {
+  overflow-y: scroll !important; /* Changed from auto to scroll to always show scrollbar */
+  padding-right: 5px !important; /* Add padding to prevent content from being hidden by scrollbar */
+}
+
+/* Ensure the scrollbar is visible in agent view as well */
+.agent-messages-container::-webkit-scrollbar {
+  width: 5px;
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.agent-messages-container::-webkit-scrollbar-track {
+  background: transparent;
+  display: block !important;
+}
+
+.agent-messages-container::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary) / 0.2);
+  border-radius: 10px;
+  display: block !important;
+}
+
+.agent-messages-container::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.4);
+}
+
+/* For Firefox */
+.agent-messages-container {
+  scrollbar-width: thin !important;
+  scrollbar-color: hsl(var(--primary) / 0.2) transparent !important;
+  overflow-y: scroll !important; /* Changed from auto to scroll to always show scrollbar */
+}
+
+/* Add these styles to ensure the scrollbar is visible and positioned correctly */
+
+/* Position the scrollbar directly at the edge of the content */
+.messages-container {
+  overflow-y: scroll !important; /* Force scrollbar to always show */
+  padding-right: 12px !important; /* Add padding to prevent content from being hidden by scrollbar */
+  margin-right: 0 !important; /* Remove any margin that might push scrollbar out of view */
+  position: relative !important; /* Ensure proper positioning context */
+}
+
+/* Make the scrollbar more visible with a distinct background */
+.messages-container::-webkit-scrollbar {
+  width: 12px !important; /* Thicker scrollbar for better visibility */
+  display: block !important;
+  position: absolute !important;
+  right: 0 !important;
+  top: 20% !important; /* Start 20% from the top */
+  height: 60% !important; /* Only take up 60% of the height */
+  bottom: 20% !important; /* End 20% from the bottom */
+  background-color: rgba(var(--primary-rgb), 0.05) !important; /* Light background for scrollbar track */
+}
+
+.messages-container::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary) / 0.3) !important; /* More visible thumb color */
+  border-radius: 10px !important;
+  border: 2px solid transparent !important; /* Creates padding effect */
+  background-clip: padding-box !important;
+  max-height: 60% !important; /* Limit the height of the thumb */
+}
+
+.messages-container::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.5) !important;
+  border: 2px solid transparent !important;
+  background-clip: padding-box !important;
+}
+
+/* Ensure agent view uses the same font as the main UI */
+.agent-interpretation .message-content,
+.agent-interpretation .colorful-word,
+.agent-interpretation .word-by-word-animation {
+  font-family: var(--font-inter) !important; /* Changed from var(--font-mono) to var(--font-inter) */
+  font-weight: 400 !important; /* Changed from 300 to 400 */
+}
+
+/* Ensure agent output uses the user font */
+.agent-message-content,
+.agent-interpretation .prose-like,
+.graph-container .prose-like {
+  font-family: var(--font-inter) !important;
+  font-weight: 400 !important;
+}
+
+/* Add these styles to the end of your globals.css file */
+
+/* Expanded input styling */
+.expanded-input-container {
+  transition: all 0.3s ease;
+}
+
+.expanded-input {
+  min-height: 300px !important;
+  transition: min-height 0.3s ease;
+}
+
+/* Ensure the textarea cursor works properly for click positioning */
+textarea {
+  cursor: text;
+}
+
+/* Add a subtle background to the expanded input to make it stand out */
+.expanded-input {
+  background-color: hsl(var(--background)) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Add a subtle animation for the expand/collapse transition */
+@keyframes expandInput {
+  from {
+    min-height: 60px;
+    max-height: 60px;
+  }
+  to {
+    min-height: 300px;
+    max-height: 600px;
+  }
+}
+
+@keyframes collapseInput {
+  from {
+    min-height: 300px;
+    max-height: 600px;
+  }
+  to {
+    min-height: 60px;
+    max-height: 60px;
+  }
+}
+
+.input-expanding {
+  animation: expandInput 0.3s ease forwards;
+}
+
+.input-collapsing {
+  animation: collapseInput 0.3s ease forwards;
+}
+
+/* Ensure the resize button is always visible */
+.resize-button {
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.resize-button:hover {
+  opacity: 1;
+}
+
+/* Ensure the expanded input doesn't get hidden behind other elements */
+.expanded-input-wrapper {
+  z-index: 20;
+  position: relative;
+}
+
+/* Find the scrollbar styling section and update it */
+
+/* Update the scrollbar width to make it thicker */
+.messages-container::-webkit-scrollbar {
+  width: 12px !important; /* Increased from 10px to 12px to make it thicker */
+  display: block !important;
+  position: absolute !important;
+  right: 0 !important;
+  top: 20% !important; /* Start 20% from the top */
+  height: 60% !important; /* Only take up 60% of the height */
+  bottom: 20% !important; /* End 20% from the bottom */
+  background-color: rgba(var(--primary-rgb), 0.05) !important; /* Light background for scrollbar track */
+}
+
+/* Add these styles to ensure the scrollbar doesn't extend below the input area */
+/* Add this to the end of your globals.css file */
+
+/* Adjust scrollbar positioning to prevent it from extending below the input area */
+.messages-container {
+  scrollbar-gutter: stable;
+  padding-bottom: 80px !important; /* Reduced from 120px to create less space at bottom */
+}
+
+/* Ensure the scrollbar doesn't extend to the very bottom */
+.messages-container::-webkit-scrollbar-track {
+  margin-bottom: 80px !important; /* Add margin at the bottom of the track */
+}
+
+.messages-container::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary) / 0.3) !important; /* More visible thumb color */
+  border-radius: 10px !important;
+  border: 2px solid transparent !important; /* Creates padding effect */
+  background-clip: padding-box !important;
+  max-height: 60% !important; /* Limit the height of the thumb */
+  margin-bottom: 80px !important; /* Add margin at the bottom of the thumb */
+}
+
+/* Ensure the scrollbar doesn't appear in the bottom padding area */
+.messages-container::after {
+  content: "";
+  display: block;
+  height: 80px; /* Match the bottom padding */
+  width: 100%;
+  pointer-events: none;
+}
+
+/* Ensure agent interpretation components use the same font as main UI */
+.agent-interpretation .message-content,
+.agent-interpretation .colorful-word,
+.agent-interpretation .word-by-word-animation,
+.agent-message-content,
+.agent-interpretation .prose-like,
+.graph-container .prose-like {
+  font-family: var(--font-inter) !important;
+  font-weight: 400 !important;
+  font-size: 18px !important;
+}
+
+/* Ensure consistent font size between input and output */
+textarea,
+.message-content,
+.colorful-word {
+  font-size: 18px !important;
+}
+
+/* Add these styles to ensure consistent text formatting and alignment */
+.message-content,
+.agent-interpretation .message-content,
+.graph-container .message-content {
+  padding-left: 17px !important;
+  padding-right: 17px !important;
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  overflow-x: hidden !important;
+  width: 100% !important;
+  display: block;
+  font-size: 18px !important;
+  line-height: 1.6 !important;
+  text-align: left !important;
+}
+
+/* Ensure proper word spacing */
+.colorful-word {
+  display: inline-block;
+  transition: color 0.3s ease;
+  margin-right: 0.25em !important;
+  color: hsl(var(--foreground)) !important;
+  position: relative;
+  z-index: 1;
+}
+
+/* Ensure consistent alignment between main UI and agent interpretation */
+.agent-interpretation .message-content,
+.agent-interpretation .colorful-word,
+.agent-interpretation .word-by-word-animation,
+.messages-container .message-content,
+.messages-container .colorful-word,
+.messages-container .word-by-word-animation {
+  text-align: left !important;
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+}
+
+/* Add these styles to ensure the sidebar scrollbar is properly styled */
+
+/* Custom scrollbar for sidebar */
+.sidebar-scroll::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: hsl(var(--sidebar-accent));
+  border-radius: 10px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.4);
+}
+
+/* For Firefox */
+.sidebar-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--sidebar-accent)) transparent;
+}
+
+/* Ensure the sidebar has proper spacing at the bottom */
+.sidebar-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Ensure the bottom section is always visible */
+.sidebar-bottom {
+  margin-top: auto;
+}
+
+textarea,
+input[type="text"] {
+  letter-spacing: -0.015em !important;
+  word-spacing: normal !important;
+}
+
+.agent-interpretation .message-content,
+.agent-interpretation .colorful-word,
+.agent-interpretation .word-by-word-animation {
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  overflow-x: hidden !important;
+  width: 100% !important;
+  padding-left: 17px !important;
+  padding-right: 17px !important;
+  font-size: 18px !important;
+  line-height: 1.6 !important;
+  font-family: var(--font-inter) !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.015em !important;
+  word-spacing: normal !important;
+}
+
+/* High Contrast Mode Specific Styles */
+.high-contrast {
+  /* Enhanced borders and outlines for better visibility */
+  .panel-box {
+    border: 2px solid hsl(var(--border)) !important;
+    box-shadow: 0 0 0 1px hsl(var(--border)) !important;
+  }
+
+  /* Enhanced button visibility */
+  button {
+    border: 2px solid hsl(var(--border)) !important;
+    font-weight: 600 !important;
+  }
+
+  /* Enhanced input visibility */
+  input, textarea {
+    border: 2px solid hsl(var(--border)) !important;
+    background-color: hsl(var(--input)) !important;
+  }
+
+  /* Enhanced switch visibility */
+  .switch {
+    border: 2px solid hsl(var(--border)) !important;
+  }
+
+  /* Enhanced card visibility */
+  .card {
+    border: 2px solid hsl(var(--border)) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5) !important;
+  }
+
+  /* Enhanced message visibility */
+  .message {
+    border-left: 4px solid hsl(var(--primary)) !important;
+  }
+
+  /* Enhanced focus states */
+  *:focus-visible {
+    outline: 3px solid hsl(var(--primary)) !important;
+    outline-offset: 2px !important;
+  }
+
+  /* Remove subtle effects that may reduce contrast */
+  .backdrop-blur-sm {
+    backdrop-filter: none !important;
+  }
+
+  /* Enhanced sidebar visibility */
+  .sidebar-container {
+    border-right: 2px solid hsl(var(--border)) !important;
+  }
+
+  /* Enhanced scrollbar visibility */
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary)) !important;
+    border: 1px solid hsl(var(--border)) !important;
+  }
+}
