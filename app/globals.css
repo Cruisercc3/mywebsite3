@@ -704,7 +704,7 @@
   white-space: pre-wrap;
   letter-spacing: -0.015em !important;
   word-spacing: normal !important;
-  margin-right: 0.25em !important;
+  margin-right: 0 !important;
 }
 
 /* Apply word-by-word animation to highlight card text */
@@ -2105,9 +2105,9 @@ textarea,
 
 /* Ensure proper word spacing */
 .colorful-word {
-  display: inline-block;
+  display: inline;
   transition: color 0.3s ease;
-  margin-right: 0.25em !important;
+  margin-right: 0 !important;
   color: hsl(var(--foreground)) !important;
   position: relative;
   z-index: 1;

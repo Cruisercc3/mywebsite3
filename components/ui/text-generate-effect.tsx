@@ -15,7 +15,7 @@ export const TextGenerateEffect = ({
   duration?: number
 }) => {
   const [scope, animate] = useAnimate()
-  const wordsArray = words.split(" ")
+  const tokens = words.split(/(\s+)/)
   useEffect(() => {
     animate(
       "span",
@@ -33,22 +33,23 @@ export const TextGenerateEffect = ({
   const renderWords = () => {
     return (
       <motion.div ref={scope}>
-        {wordsArray.map((word, idx) => {
-          return (
+        {tokens.map((token, idx) => (
+          token.trim().length > 0 ? (
             <motion.span
-              key={word + idx}
+              key={token + idx}
               className="dark:text-white text-black opacity-0 colorful-word"
               style={{
                 filter: filter ? "blur(10px)" : "none",
                 fontSize: "11px",
                 background: "transparent",
-                marginRight: "0.25em",
               }}
             >
-              {word}
+              {token}
             </motion.span>
+          ) : (
+            token
           )
-        })}
+        ))}
       </motion.div>
     )
   }

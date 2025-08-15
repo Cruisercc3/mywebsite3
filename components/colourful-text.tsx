@@ -8,14 +8,18 @@ export function ColourfulText({
   className?: string
 }) {
   // Split text into words
-  const words = text.split(/(\s+)/).filter((word) => word.trim().length > 0)
+  const wordsAndSpaces = text.split(/(\s+)/)
 
   return (
     <div className={`${className} word-by-word-animation`} style={{ fontSize: "11px", lineHeight: "1.5" }}>
-      {words.map((word, index) => (
-        <span key={index} className="colorful-word" style={{ fontSize: "11px", marginRight: "0.25em" }}>
-          {word}
-        </span>
+      {wordsAndSpaces.map((token, index) => (
+        token.trim().length > 0 ? (
+          <span key={index} className="colorful-word" style={{ fontSize: "11px" }}>
+            {token}
+          </span>
+        ) : (
+          token
+        )
       ))}
     </div>
   )
