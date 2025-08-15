@@ -22,7 +22,7 @@ export function ColourfulText({
   ]
 
   // Split text into words
-  const words = text.split(/(\s+)/).filter((word) => word.trim().length > 0)
+  const wordsAndSpaces = text.split(/(\s+)/)
 
   // Simple fade-in animation for text appearance
   return (
@@ -33,14 +33,18 @@ export function ColourfulText({
       className={`${className} word-by-word-animation`}
       style={{ fontSize: "11px", lineHeight: "1.5", background: "transparent" }}
     >
-      {words.map((word, index) => (
-        <span
-          key={index}
-          className="colorful-word"
-          style={{ fontSize: "11px", background: "transparent", marginRight: "0.25em" }}
-        >
-          {word}
-        </span>
+      {wordsAndSpaces.map((token, index) => (
+        token.trim().length > 0 ? (
+          <span
+            key={index}
+            className="colorful-word"
+            style={{ fontSize: "11px", background: "transparent" }}
+          >
+            {token}
+          </span>
+        ) : (
+          token
+        )
       ))}
     </motion.div>
   )
