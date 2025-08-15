@@ -13,8 +13,8 @@ export function ColourfulText({
   return (
     <div className={`${className} word-by-word-animation`} style={{ fontSize: "11px", lineHeight: "1.5" }}>
       {words.map((word, index) => (
-        <span key={index} className="colorful-word" style={{ fontSize: "11px", marginRight: "0.25em" }}>
-          {word}
+        <span key={index} className="colorful-word" style={{ fontSize: "11px" }}>
+          {word + " "}
         </span>
       ))}
     </div>
