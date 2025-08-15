@@ -37,9 +37,9 @@ export function ColourfulText({
         <span
           key={index}
           className="colorful-word"
-          style={{ fontSize: "11px", background: "transparent", marginRight: "0.25em" }}
+          style={{ fontSize: "11px", background: "transparent" }}
         >
-          {word}
+          {word + " "}
         </span>
       ))}
     </motion.div>

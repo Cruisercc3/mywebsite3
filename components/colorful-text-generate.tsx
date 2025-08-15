@@ -108,8 +108,8 @@ export function ColorfulTextGenerate({
           {text.split("\n\n").map((paragraph, pIdx) => (
             <div key={`p-${pIdx}`} className="mb-4 last:mb-0">
               {paragraph.split(" ").map((word, idx) => (
-                <span key={idx} className="colorful-word" style={{ marginRight: "0.25em", ...CONSISTENT_FONT_STYLES }}>
-                  {word}
+                <span key={idx} className="colorful-word" style={{ ...CONSISTENT_FONT_STYLES }}>
+                  {word + " "}
                 </span>
               ))}
             </div>
@@ -131,9 +131,9 @@ export function ColorfulTextGenerate({
                   key={`${pIdx}-${wordIdx}`}
                   initial={{ opacity: 0 }}
                   className="colorful-word"
-                  style={{ marginRight: "0.25em", ...CONSISTENT_FONT_STYLES }}
+                  style={{ ...CONSISTENT_FONT_STYLES }}
                 >
-                  {word}
+                  {word + " "}
                 </motion.span>
               ))}
             </div>
@@ -160,7 +160,6 @@ export function ColorfulTextGenerate({
                   className="dark:text-white text-black opacity-0 colorful-word font-user font-normal"
                   style={{
                     display: "inline",
-                    marginRight: "0.25em",
                     transition: "color 0.3s ease",
                     whiteSpace: "pre-wrap",
                     wordBreak: "break-word",
@@ -171,7 +170,7 @@ export function ColorfulTextGenerate({
                     ...CONSISTENT_FONT_STYLES,
                   }}
                 >
-                  {word}
+                  {word + " "}
                 </motion.span>
               ))}
             </div>
