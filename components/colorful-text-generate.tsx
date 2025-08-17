@@ -8,8 +8,8 @@ const CONSISTENT_FONT_STYLES = {
   fontFamily: "var(--font-user)",
   fontSize: "18px",
   fontWeight: "normal",
-  lineHeight: "1.6",
-  letterSpacing: "-0.015em", // Tighter letter spacing for more attractive look
+  lineHeight: "1.5",
+  letterSpacing: "-0.02em", // Tighter letter spacing to match input
   wordSpacing: "normal",
 } as const
 
@@ -107,12 +107,16 @@ export function ColorfulTextGenerate({
         >
           {text.split("\n\n").map((paragraph, pIdx) => (
             <div key={`p-${pIdx}`} className="mb-4 last:mb-0">
-              {paragraph.split(" ").map((word, idx) => (
-                <span key={idx} className="colorful-word" style={{ marginRight: "0.25em", ...CONSISTENT_FONT_STYLES }}>
-                  {word}
-                </span>
-              ))}
-            </div>
+                             {paragraph.split(/(\s+)/).map((token, idx) =>
+                 token.trim().length === 0 ? (
+                   token
+                 ) : (
+                   <span key={idx} className="colorful-word" style={{ ...CONSISTENT_FONT_STYLES }}>
+                     {token}
+                   </span>
+                 ),
+               )}
+</div>
           ))}
         </div>
       )
@@ -126,17 +130,21 @@ export function ColorfulTextGenerate({
         <motion.div ref={scope} style={{ textAlign: "left", ...CONSISTENT_FONT_STYLES }}>
           {paragraphs.map((paragraph, pIdx) => (
             <div key={`para-${pIdx}`} className="mb-4 last:mb-0">
-              {paragraph.split(" ").map((word, wordIdx) => (
-                <motion.span
-                  key={`${pIdx}-${wordIdx}`}
-                  initial={{ opacity: 0 }}
-                  className="colorful-word"
-                  style={{ marginRight: "0.25em", ...CONSISTENT_FONT_STYLES }}
-                >
-                  {word}
-                </motion.span>
-              ))}
-            </div>
+                             {paragraph.split(/(\s+)/).map((token, wordIdx) =>
+                 token.trim().length === 0 ? (
+                   token
+                 ) : (
+                   <motion.span
+                     key={`${pIdx}-${wordIdx}`}
+                     initial={{ opacity: 0 }}
+                     className="colorful-word"
+                     style={{ ...CONSISTENT_FONT_STYLES }}
+                   >
+                     {token}
+                   </motion.span>
+                 ),
+               )}
+</div>
           ))}
         </motion.div>
       )
@@ -154,26 +162,27 @@ export function ColorfulTextGenerate({
 
           return (
             <div key={`p-${pIdx}`} className={`paragraph ${isListItem ? "pl-4" : ""} ${isIndented ? "pl-6" : ""}`}>
-              {paragraph.split(" ").map((word, idx) => (
-                <motion.span
-                  key={`${word}-${idx}-${pIdx}`}
-                  className="dark:text-white text-black opacity-0 colorful-word font-user font-normal"
-                  style={{
-                    display: "inline",
-                    marginRight: "0.25em",
-                    transition: "color 0.3s ease",
-                    whiteSpace: "pre-wrap",
-                    wordBreak: "break-word",
-                    overflowWrap: "break-word",
-                    maxWidth: "100%",
-                    letterSpacing: "-0.015em",
-                    wordSpacing: "normal",
-                    ...CONSISTENT_FONT_STYLES,
-                  }}
-                >
-                  {word}
-                </motion.span>
-              ))}
+              {paragraph.split(/(\s+)/).map((token, idx) =>
+                token.trim().length === 0 ? (
+                  token
+                ) : (
+                  <motion.span
+                    key={`${token}-${idx}-${pIdx}`}
+                    className="dark:text-white text-black opacity-0 colorful-word font-user font-normal"
+                    style={{
+                      display: "inline",
+                      transition: "color 0.3s ease",
+                      whiteSpace: "pre-wrap",
+                      wordBreak: "break-word",
+                      overflowWrap: "break-word",
+                      maxWidth: "100%",
+                      ...CONSISTENT_FONT_STYLES,
+                    }}
+                  >
+                    {token}
+                  </motion.span>
+                ),
+              )}
             </div>
           )
         })}
