@@ -13,6 +13,7 @@ import { CalendarView } from "@/components/calendar-view"
 import { SettingsView } from "@/components/settings-view"
 import { StorageView } from "@/components/storage-view"
 import { ColorfulTextGenerate } from "@/components/colorful-text-generate"
+import ColorInput from "@/components/color-input"
 import { motion } from "framer-motion"
 import { CardStackCompact } from "@/components/card-stack-compact"
 import { NoteManager } from "@/components/note-manager"
@@ -895,11 +896,11 @@ export default function ChatPage() {
                   </div>
                   <div className="p-2.5 h-[calc(100%-40px)] flex flex-col justify-center">
                     <div className="relative w-full">
-                      <textarea
+                      <ColorInput
                         value={agentInputText}
                         onChange={(e) => setAgentInputText(e.target.value)}
                         placeholder="Type your input here..."
-                        className="w-full p-3 bg-background border border-primary/10 rounded-lg focus:ring-1 focus:ring-primary/30 focus:outline-none resize-none transition-all duration-300 min-h-[60px]"
+                        className="w-full min-h-[60px]"
                         style={consistentTextStyles}
                         onKeyDown={(e) => {
                           if (e.key === "Enter" && !e.shiftKey) {
@@ -1179,15 +1180,12 @@ export default function ChatPage() {
                                   )}
                                 </Button>
                               </div>
-                              <textarea
-                                ref={textareaRef}
+                              <ColorInput
                                 value={newInput}
                                 onChange={(e) => setNewInput(e.target.value)}
                                 placeholder="Type your message here..."
-                                className={`w-full p-3 bg-background border border-primary/10 rounded-lg focus:ring-1 focus:ring-primary/30 focus:outline-none resize-none transition-all duration-300 ${isInputExpanded ? "min-h-[300px]" : "min-h-[60px]"}`}
+                                className={`${isInputExpanded ? "min-h-[300px]" : "min-h-[60px]"}`}
                                 style={consistentTextStyles}
-                                onFocus={() => setIsInputFocused(true)}
-                                onBlur={() => setIsInputFocused(false)}
                                 onKeyDown={(e) => {
                                   if (e.key === "Enter" && !e.shiftKey && !isInputExpanded) {
                                     e.preventDefault()
@@ -1259,15 +1257,12 @@ export default function ChatPage() {
                                   )}
                                 </Button>
                               </div>
-                              <textarea
-                                ref={textareaRef}
+                              <ColorInput
                                 value={newInput}
                                 onChange={(e) => setNewInput(e.target.value)}
                                 placeholder="Type your message here..."
-                                className={`w-full p-3 bg-background border border-primary/10 rounded-lg focus:ring-1 focus:ring-primary/30 focus:outline-none resize-none transition-all duration-300 ${isInputExpanded ? "min-h-[300px]" : "min-h-[60px]"}`}
+                                className={`${isInputExpanded ? "min-h-[300px]" : "min-h-[60px]"}`}
                                 style={consistentTextStyles}
-                                onFocus={() => setIsInputFocused(true)}
-                                onBlur={() => setIsInputFocused(false)}
                                 onKeyDown={(e) => {
                                   if (e.key === "Enter" && !e.shiftKey && !isInputExpanded) {
                                     e.preventDefault()
