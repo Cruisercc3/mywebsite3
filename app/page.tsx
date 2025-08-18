@@ -839,7 +839,7 @@ export default function ChatPage() {
             <div className="flex-1 flex flex-row overflow-hidden">
               <div className="flex-1 flex flex-col overflow-hidden">
                 <div
-                  className="flex-1 overflow-y-scroll p-2.5 pb-24 space-y-1.5 messages-container custom-scrollbar agent-messages-container"
+                  className="flex-1 overflow-y-scroll p-2.5 pb-24 space-y-1.5 messages-container custom-scrollbar agent-messages-container chat-surface"
                   style={{
                     width: "100%",
                     maxWidth: "1800px",
@@ -947,7 +947,7 @@ export default function ChatPage() {
                       </Tooltip>
                     </TooltipProvider>
                   </div>
-                  <div className="flex-1 p-3 overflow-y-auto overflow-x-hidden custom-scrollbar">
+                  <div className="flex-1 p-3 overflow-y-auto overflow-x-hidden custom-scrollbar chat-surface">
                     {agentResponses.length > 0 ? (
                       <div className="space-y-4">
                         {agentResponses.map((response, index) => (
@@ -1140,7 +1140,7 @@ export default function ChatPage() {
             <div className="flex-1 flex flex-row overflow-hidden">
               <div className="flex-1 flex flex-col overflow-hidden">
                 <div
-                  className="flex-1 overflow-y-scroll p-2.5 space-y-1.5 messages-container custom-scrollbar"
+                  className="flex-1 overflow-y-scroll p-2.5 space-y-1.5 messages-container custom-scrollbar chat-surface"
                   style={{
                     width: "100%",
                     maxWidth: "1800px",
@@ -1369,7 +1369,7 @@ export default function ChatPage() {
                       </Tooltip>
                     </TooltipProvider>
                   </div>
-                  <div className="flex-1 p-3 overflow-y-auto overflow-x-hidden custom-scrollbar">
+                  <div className="flex-1 p-3 overflow-y-auto overflow-x-hidden custom-scrollbar chat-surface">
                     {agentResponses.length > 0 ? (
                       <div className="space-y-4">
                         {agentResponses.map((response, index) => (

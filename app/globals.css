@@ -580,8 +580,7 @@
   color: hsl(var(--foreground)) !important;
   position: relative;
   z-index: 1;
-  letter-spacing: -0.02em !important;
-  word-spacing: normal !important;
+  /* base rule intentionally neutral to avoid impacting non-chat UI */
 }
 
 .colorful-word:hover {
@@ -691,14 +690,18 @@
   cursor: grabbing;
 }
 
-/* Add word-by-word animation styles */
-.word-by-word-animation {
+/* Add word-by-word animation styles — scoped */
+.chat-surface .word-by-word-animation,
+.agent-interpretation .word-by-word-animation,
+.graph-container .word-by-word-animation {
   white-space: pre-wrap;
   letter-spacing: -0.02em !important;
   word-spacing: normal !important;
 }
 
-.word-by-word-animation .colorful-word {
+.chat-surface .word-by-word-animation .colorful-word,
+.agent-interpretation .word-by-word-animation .colorful-word,
+.graph-container .word-by-word-animation .colorful-word {
   display: inline;
   transition: color 0.2s ease, text-shadow 0.2s ease;
   white-space: pre-wrap;
@@ -1571,7 +1574,7 @@ button {
 }
 
 /* Ensure consistent paragraph styling across all views */
-.message-content,
+.chat-surface .message-content,
 .agent-interpretation .message-content,
 .graph-container .message-content {
   padding-left: 17px !important;
@@ -1651,8 +1654,10 @@ button {
   padding: 0 !important;
 }
 
-/* Ensure the message-content class doesn't override the colorful word effect */
-.message-content .colorful-word {
+/* Ensure the message-content class doesn't override the colorful word effect — scoped */
+.chat-surface .message-content .colorful-word,
+.agent-interpretation .message-content .colorful-word,
+.graph-container .message-content .colorful-word {
   display: inline;
   transition: color 0.3s ease;
   margin-right: 0;
@@ -2079,15 +2084,14 @@ textarea {
   font-size: 18px !important;
 }
 
-/* Ensure consistent font size between input and output */
-textarea,
-.message-content,
-.colorful-word {
+/* Ensure consistent font size between input and output — scoped to chat only */
+.chat-surface .message-content,
+.chat-surface .colorful-word {
   font-size: 18px !important;
 }
 
-/* Add these styles to ensure consistent text formatting and alignment */
-.message-content,
+/* Add these styles to ensure consistent text formatting and alignment — scoped */
+.chat-surface .message-content,
 .agent-interpretation .message-content,
 .graph-container .message-content {
   padding-left: 17px !important;
@@ -2099,12 +2103,14 @@ textarea,
   width: 100% !important;
   display: block;
   font-size: 18px !important;
-  line-height: 1.6 !important;
+  line-height: 1.5 !important;
   text-align: left !important;
 }
 
-/* Ensure proper word spacing */
-.colorful-word {
+/* Ensure proper word spacing — scoped and global base kept minimal */
+.chat-surface .colorful-word,
+.agent-interpretation .colorful-word,
+.graph-container .colorful-word {
   display: inline;
   transition: color 0.3s ease;
   margin-right: 0 !important;
@@ -2115,13 +2121,13 @@ textarea,
   word-spacing: normal !important;
 }
 
-/* Ensure consistent alignment between main UI and agent interpretation */
+/* Ensure consistent alignment between main UI and agent interpretation — scoped */
 .agent-interpretation .message-content,
 .agent-interpretation .colorful-word,
 .agent-interpretation .word-by-word-animation,
-.messages-container .message-content,
-.messages-container .colorful-word,
-.messages-container .word-by-word-animation {
+.chat-surface .message-content,
+.chat-surface .colorful-word,
+.chat-surface .word-by-word-animation {
   text-align: left !important;
   white-space: pre-wrap !important;
   word-break: break-word !important;
@@ -2166,11 +2172,12 @@ textarea,
   margin-top: auto;
 }
 
-textarea,
+/* Remove global input tightening to avoid affecting sidebar inputs */
+/* textarea,
 input[type="text"] {
   letter-spacing: -0.015em !important;
   word-spacing: normal !important;
-}
+} */
 
 .agent-interpretation .message-content,
 .agent-interpretation .colorful-word,
@@ -2186,6 +2193,6 @@ input[type="text"] {
   line-height: 1.6 !important;
   font-family: var(--font-inter) !important;
   font-weight: 400 !important;
-  letter-spacing: -0.015em !important;
+  letter-spacing: -0.02em !important;
   word-spacing: normal !important;
 }
