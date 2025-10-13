@@ -230,6 +230,12 @@ export function HighlightCard({ highlights, onRemove, onRemoveItem }: HighlightC
       transition={{ duration: 0.2, ease: "circOut" }}
       drag={!isResizing}
       dragMomentum={false}
+      dragConstraints={{
+        left: 0,
+        right: window.innerWidth - (dimensions.width as number),
+        top: 0,
+        bottom: window.innerHeight - (typeof dimensions.height === "number" ? dimensions.height : 400),
+      }}
       onDragStart={() => setIsDragging(true)}
       onDragEnd={(e, info) => {
         setIsDragging(false)
@@ -239,11 +245,19 @@ export function HighlightCard({ highlights, onRemove, onRemoveItem }: HighlightC
         }))
       }}
       className={cn(
-        "fixed top-0 left-0 z-50 flex flex-col rounded-lg border border-primary/20 bg-background/95 backdrop-blur-sm shadow-md",
+        "fixed top-0 left-0 z-[9999] highlight-card-overlay flex flex-col rounded-lg border border-primary/20 bg-background shadow-md",
         isDragging && "shadow-lg cursor-grabbing",
         isResizing && "pointer-events-none",
       )}
-      style={{ touchAction: "none" }}
+      style={{
+        touchAction: "none",
+        zIndex: 9999,
+        position: "fixed",
+        pointerEvents: "auto",
+        isolation: "isolate",
+        willChange: "transform",
+        backdropFilter: "none", // Removed backdrop-filter to eliminate blur
+      }}
     >
       {/* Header */}
       <div className="flex items-center justify-between p-2 border-b border-primary/10 bg-primary/5 rounded-t-lg flex-shrink-0">
@@ -284,10 +298,10 @@ export function HighlightCard({ highlights, onRemove, onRemoveItem }: HighlightC
       </div>
 
       {/* Content */}
-      <div className={cn("flex-grow flex flex-col overflow-hidden", isExpanded ? "p-4" : "p-3")}>
+      <div className={cn("flex-grow flex flex-col", isExpanded ? "p-4" : "p-3")}>
         <div
           className={cn(
-            "bg-primary/5 p-2 rounded-md mb-1 overflow-y-auto",
+            "bg-primary/5 p-2 rounded-md mb-1 overflow-y-auto custom-scrollbar",
             isExpanded ? "text-sm" : "text-xs max-h-40",
           )}
         >
@@ -316,8 +330,18 @@ export function HighlightCard({ highlights, onRemove, onRemoveItem }: HighlightC
                   >
                     <StickyNote className={cn("h-3 w-3", isExpanded && "h-3.5 w-3.5")} />
                   </button>
-                  <div className={cn("colorful-text", highlightStates[highlight.id] ? "text-primary font-medium" : "")}>
-                    {highlight.text}
+                  <div className={cn("flex-1", highlightStates[highlight.id] ? "text-primary font-medium" : "")}>
+                    <div
+                      className="text-spacing-fix"
+                      style={{
+                        whiteSpace: "pre-wrap",
+                        wordBreak: "break-word",
+                        wordSpacing: "normal",
+                        letterSpacing: "normal",
+                      }}
+                    >
+                      {highlight.text}
+                    </div>
                   </div>
                 </div>
                 <button
@@ -367,9 +391,9 @@ export function HighlightCard({ highlights, onRemove, onRemoveItem }: HighlightC
                 onClick: () => {},
               },
               {
-                label: "Storage",
+                label: "Notes", // Changed from "Storage" to "Notes"
                 icon: Archive,
-                tooltip: "Store this text",
+                tooltip: "Send to notes", // Updated tooltip from "Store this text" to "Send to notes"
                 onClick: handleStoreHighlight,
               },
             ].map(({ label, icon: Icon, tooltip, onClick }) => (
@@ -387,7 +411,7 @@ export function HighlightCard({ highlights, onRemove, onRemoveItem }: HighlightC
                       <span>{label}</span>
                     </button>
                   </TooltipTrigger>
-                  <TooltipContent side="bottom" className="text-[9px] p-2 max-w-[150px]">
+                  <TooltipContent side="top" className="text-[9px] p-2 max-w-[150px] z-[10000]">
                     <p>{tooltip}</p>
                   </TooltipContent>
                 </Tooltip>
@@ -397,16 +421,16 @@ export function HighlightCard({ highlights, onRemove, onRemoveItem }: HighlightC
         </div>
 
         {/* Input areas */}
-        <div className="overflow-y-auto mt-2 flex-shrink-0">
+        <div className="overflow-y-auto flex-shrink-0">
           {showAddInput && (
-            <div className="mt-3 pt-2 border-t border-primary/10">
+            <div className="mt-1 pt-1 border-t border-primary/10">
               <div className="relative">
                 <textarea
                   value={addText}
                   onChange={(e) => setAddText(e.target.value)}
                   placeholder="Add additional context..."
                   className={cn(
-                    "w-full p-2 bg-background border border-primary/10 rounded-lg focus:ring-1 focus:ring-primary/30 focus:outline-none font-user resize-none transition-all duration-300 min-h-[40px]",
+                    "w-full p-2 bg-background border border-primary/10 rounded-lg focus:ring-1 focus:ring-primary/30 focus:outline-none font-user resize-none transition-all duration-300 min-h-[40px] custom-scrollbar",
                     isExpanded ? "text-sm" : "text-[11px]",
                   )}
                   onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && (e.preventDefault(), handleAddSubmit())}
@@ -424,7 +448,7 @@ export function HighlightCard({ highlights, onRemove, onRemoveItem }: HighlightC
           )}
 
           {showQuestionInput && (
-            <div className="mt-3 pt-2 border-t border-primary/10">
+            <div className="mt-1 pt-1 border-t border-primary/10">
               <div className="relative">
                 <textarea
                   ref={questionInputRef}
@@ -432,7 +456,7 @@ export function HighlightCard({ highlights, onRemove, onRemoveItem }: HighlightC
                   onChange={(e) => setQuestionText(e.target.value)}
                   placeholder="Ask a question about this text..."
                   className={cn(
-                    "w-full p-2 bg-background border border-primary/10 rounded-lg focus:ring-1 focus:ring-primary/30 focus:outline-none font-user resize-none transition-all duration-300",
+                    "w-full p-2 bg-background border border-primary/10 rounded-lg focus:ring-1 focus:ring-primary/30 focus:outline-none font-user resize-none transition-all duration-300 min-h-[40px] custom-scrollbar",
                     isExpanded ? "min-h-[80px] text-sm" : "min-h-[40px] text-[11px]",
                   )}
                   onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && (e.preventDefault(), handleQuestionSubmit())}
@@ -450,11 +474,11 @@ export function HighlightCard({ highlights, onRemove, onRemoveItem }: HighlightC
           )}
 
           {questionResponses.length > 0 && (
-            <div className="mt-3 pt-2 border-t border-primary/10">
+            <div className="mt-1 pt-1 border-t border-primary/10">
               <div className={cn("font-medium text-primary/80 mb-2", isExpanded ? "text-sm" : "text-xs")}>
                 Questions:
               </div>
-              <div className="space-y-2 max-h-40 overflow-y-auto">
+              <div className="space-y-2 max-h-40 overflow-y-auto custom-scrollbar">
                 {questionResponses.map((response) => (
                   <div
                     key={response.id}

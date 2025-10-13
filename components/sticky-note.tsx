@@ -10,23 +10,34 @@ import { cn } from "@/lib/utils"
 interface StickyNoteProps {
   id: string
   text: string
+  title?: string // Added optional title prop
   isEditable?: boolean
   onClose: () => void
-  onTextChange?: (id: string, newText: string) => void
+  onTextChange?: (id: string, newText: string, newTitle?: string) => void // Updated to handle title changes
   initialPosition?: { x: number; y: number }
 }
 
-export function StickyNote({ id, text, isEditable = false, onClose, onTextChange, initialPosition }: StickyNoteProps) {
+export function StickyNote({
+  id,
+  text,
+  title = "",
+  isEditable = false,
+  onClose,
+  onTextChange,
+  initialPosition,
+}: StickyNoteProps) {
   const [position, setPosition] = useState(initialPosition || { x: 0, y: 0 })
   const [isDragging, setIsDragging] = useState(false)
-  const [isEditing, setIsEditing] = useState(isEditable && !text)
+  const [isEditing, setIsEditing] = useState(isEditable && !text && !title)
   const [noteText, setNoteText] = useState(text)
+  const [noteTitle, setNoteTitle] = useState(title) // Added state for title
   const [dimensions, setDimensions] = useState({ width: 288, height: 300 })
   const [isResizing, setIsResizing] = useState(false)
   const [resizeDirection, setResizeDirection] = useState<string | null>(null)
   const [isExpanded, setIsExpanded] = useState(false)
   const noteRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const titleInputRef = useRef<HTMLInputElement>(null) // Added ref for title input
   const initialResizePos = useRef({ x: 0, y: 0 })
   const initialDimensions = useRef({ width: 288, height: 300 })
 
@@ -45,10 +56,14 @@ export function StickyNote({ id, text, isEditable = false, onClose, onTextChange
     setNoteText(e.target.value)
   }
 
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNoteTitle(e.target.value)
+  }
+
   const saveChanges = () => {
     setIsEditing(false)
     if (onTextChange) {
-      onTextChange(id, noteText)
+      onTextChange(id, noteText, noteTitle) // Pass both text and title
     }
   }
 
@@ -126,9 +141,9 @@ export function StickyNote({ id, text, isEditable = false, onClose, onTextChange
   }
 
   useEffect(() => {
-    if (isEditing && textareaRef.current) {
-      textareaRef.current.focus()
-      textareaRef.current.select()
+    if (isEditing && titleInputRef.current) {
+      titleInputRef.current.focus()
+      titleInputRef.current.select()
     }
   }, [isEditing])
 
@@ -155,7 +170,7 @@ export function StickyNote({ id, text, isEditable = false, onClose, onTextChange
         }))
       }}
       className={cn(
-        "fixed top-0 left-0 z-50 rounded-lg border border-yellow-400/50 bg-yellow-50/95 dark:bg-yellow-900/30 backdrop-blur-sm shadow-lg",
+        "fixed top-0 left-0 z-[9999] rounded-lg border border-yellow-400/50 bg-yellow-50/95 dark:bg-yellow-900/30 backdrop-blur-sm shadow-lg",
         isDragging && "shadow-xl cursor-grabbing",
         isResizing && "pointer-events-none",
       )}
@@ -163,6 +178,7 @@ export function StickyNote({ id, text, isEditable = false, onClose, onTextChange
         touchAction: "none",
         width: isExpanded ? `${Math.min(800, window.innerWidth * 0.8)}px` : `${dimensions.width}px`,
         height: isExpanded ? `${Math.min(600, window.innerHeight * 0.8)}px` : `${dimensions.height}px`,
+        zIndex: 9999,
       }}
     >
       {/* Header with drag handle */}
@@ -197,31 +213,61 @@ export function StickyNote({ id, text, isEditable = false, onClose, onTextChange
 
       {/* Content */}
       <div className="flex flex-col h-[calc(100%-40px)]">
-        <div className="p-3 h-full overflow-y-auto">
-          {isEditing ? (
-            <textarea
-              ref={textareaRef}
-              value={noteText}
-              onChange={handleTextChange}
-              className="w-full h-full bg-transparent border-none focus:ring-0 focus:outline-none text-base font-medium text-yellow-800 dark:text-yellow-200 resize-none"
-              onKeyDown={(e) => {
-                if (e.key === "Escape") {
-                  saveChanges()
-                }
-                if (e.key === "Enter" && e.ctrlKey) {
-                  saveChanges()
-                }
-              }}
-              autoFocus
-            />
-          ) : (
-            <div
-              className="text-base font-medium text-yellow-800 dark:text-yellow-200 whitespace-pre-wrap break-words cursor-text"
-              onClick={() => isEditable && setIsEditing(true)}
-            >
-              {noteText || "Click to add a note..."}
-            </div>
-          )}
+        <div className="p-3 h-full overflow-y-auto flex flex-col">
+          <div className="mb-3">
+            {isEditing ? (
+              <input
+                ref={titleInputRef}
+                type="text"
+                value={noteTitle}
+                onChange={handleTitleChange}
+                placeholder="Title"
+                className="w-full bg-transparent border-none focus:ring-0 focus:outline-none text-lg font-bold text-yellow-800 dark:text-yellow-200 placeholder-yellow-600/50 dark:placeholder-yellow-400/50"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    textareaRef.current?.focus()
+                  }
+                  if (e.key === "Escape") {
+                    saveChanges()
+                  }
+                }}
+              />
+            ) : (
+              <div
+                className="text-lg font-bold text-yellow-800 dark:text-yellow-200 cursor-text min-h-[1.5rem]"
+                onClick={() => isEditable && setIsEditing(true)}
+              >
+                {noteTitle || (isEditable ? "Title" : "")}
+              </div>
+            )}
+          </div>
+
+          <div className="flex-1">
+            {isEditing ? (
+              <textarea
+                ref={textareaRef}
+                value={noteText}
+                onChange={handleTextChange}
+                placeholder="Note content..."
+                className="w-full h-full bg-transparent border-none focus:ring-0 focus:outline-none text-base font-medium text-yellow-800 dark:text-yellow-200 resize-none placeholder-yellow-600/50 dark:placeholder-yellow-400/50"
+                onKeyDown={(e) => {
+                  if (e.key === "Escape") {
+                    saveChanges()
+                  }
+                  if (e.key === "Enter" && e.ctrlKey) {
+                    saveChanges()
+                  }
+                }}
+              />
+            ) : (
+              <div
+                className="text-base font-medium text-yellow-800 dark:text-yellow-200 whitespace-pre-wrap break-words cursor-text"
+                onClick={() => isEditable && setIsEditing(true)}
+              >
+                {noteText || (isEditable ? "Click to add a note..." : "")}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

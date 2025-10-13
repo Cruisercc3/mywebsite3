@@ -2,21 +2,30 @@
 
 import type React from "react"
 
-import { useState, useEffect, useRef } from "react"
-import { Users, X, ChevronRight, ChevronLeft, ArrowRight, Maximize2, Minimize2, HelpCircle } from "lucide-react"
+import { useState, useEffect, useRef, useCallback } from "react"
+import {
+  X,
+  ChevronRight,
+  ChevronLeft,
+  ArrowRight,
+  Maximize2,
+  Minimize2,
+  HelpCircle,
+  History,
+  Calendar,
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import ChatMessage from "@/components/chat-message"
 import { Sidebar } from "@/components/sidebar"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { GlowMenu } from "@/components/glow-menu"
-import { CalendarView } from "@/components/calendar-view"
+import { CalendarView } from "@/components/patterns-page"
 import { SettingsView } from "@/components/settings-view"
-import { StorageView } from "@/components/storage-view"
+import { StorageView } from "@/components/notes-page"
 import { ColorfulTextGenerate } from "@/components/colorful-text-generate"
 import { motion } from "framer-motion"
 import { CardStackCompact } from "@/components/card-stack-compact"
 import { NoteManager } from "@/components/note-manager"
-import { AgentsView } from "@/components/agents-view"
 import { AgentQuestionsView } from "@/components/agent-questions-view"
 import { QuestionDetailView } from "@/components/question-detail-view"
 
@@ -58,16 +67,7 @@ interface QuestionSet {
   timestamp: Date
 }
 
-type ViewType =
-  | "home"
-  | "brain"
-  | "calendar"
-  | "settings"
-  | "agent"
-  | "agents"
-  | "storage"
-  | "agent-questions"
-  | "question-detail"
+type ViewType = "home" | "brain" | "calendar" | "settings" | "storage" | "agent-questions" | "question-detail" | "agent"
 
 export default function ChatPage() {
   const [input, setInput] = useState("")
@@ -175,14 +175,6 @@ export default function ChatPage() {
     ]
   }
 
-  const toggleAgentsView = () => {
-    setCurrentView(currentView === "agents" ? "home" : "agents")
-  }
-
-  const toggleAgentInterpretation = () => {
-    setCurrentView(currentView === "agent" ? "home" : "agent")
-  }
-
   const goToHome = () => {
     setCurrentView("home")
   }
@@ -197,16 +189,12 @@ export default function ChatPage() {
   }
 
   // Update the function names to reflect the swap
-  const goToKnowledge = () => {
-    setCurrentView("calendar") // This now shows knowledge cards
+  const goToPatterns = () => {
+    setCurrentView("calendar")
   }
 
   const goToStorage = () => {
     setCurrentView("storage") // This now shows stored items
-  }
-
-  const goToInsights = () => {
-    setCurrentView("calendar")
   }
 
   const goToSettings = () => {
@@ -225,6 +213,51 @@ export default function ChatPage() {
       }
     }, 100)
   }
+
+  const handleInputTextSelection = useCallback(() => {
+    const selection = window.getSelection()
+    if (!selection || selection.toString().trim() === "" || selection.toString().length < 3) {
+      return
+    }
+
+    const text = selection.toString().trim()
+
+    // Create new highlight and dispatch event to note manager
+    const newHighlight = {
+      id: Date.now().toString(),
+      text,
+      isAdded: false,
+    }
+
+    // Dispatch event to create highlighted card through note manager
+    window.dispatchEvent(
+      new CustomEvent("create-highlight", {
+        detail: { highlight: newHighlight },
+      }),
+    )
+
+    // Clear selection
+    window.getSelection()?.removeAllRanges()
+  }, [])
+
+  const handleInputMouseUp = useCallback(
+    (e: React.MouseEvent) => {
+      // Ignore if this is part of a double-click
+      if (e.detail > 1) {
+        e.preventDefault()
+        return
+      }
+
+      // Debounce with delay
+      setTimeout(() => {
+        const selection = window.getSelection()
+        if (selection && selection.toString().trim() !== "" && selection.toString().length >= 3) {
+          handleInputTextSelection()
+        }
+      }, 150)
+    },
+    [handleInputTextSelection],
+  )
 
   useEffect(() => {
     const groups: Message[][] = []
@@ -747,6 +780,10 @@ export default function ChatPage() {
     setConversations((prev) => updateActiveRecursively(prev))
   }, [activeChatId])
 
+  const toggleAgentInterpretation = () => {
+    // Implementation for toggleAgentInterpretation
+  }
+
   return (
     <div className="flex h-screen bg-background overflow-hidden">
       {/* Top Navigation Bar - moved down slightly */}
@@ -755,9 +792,8 @@ export default function ChatPage() {
           <div className="flex items-center gap-2">{/* Remove the Button with Sparkles icon */}</div>
           <div className="absolute left-1/2 transform -translate-x-1/2">
             <GlowMenu
-              toggleBrainView={toggleAgentsView}
               goToHome={goToHome}
-              goToCalendar={goToKnowledge} // Now goes to knowledge cards
+              goToCalendar={goToPatterns}
               goToStorage={goToStorage}
               goToSettings={goToSettings}
             />
@@ -783,7 +819,7 @@ export default function ChatPage() {
         </motion.div>
       )}
 
-      {currentView === "home" && (
+      {currentView === "home" && !rightPanelOpen && (
         <motion.div
           initial={{ opacity: 0, x: 10 }}
           animate={{ opacity: 1, x: 0 }}
@@ -796,11 +832,7 @@ export default function ChatPage() {
             onClick={toggleRightPanel}
             className="h-8 w-8 p-0 rounded-l-full rounded-r-none bg-background/80 backdrop-blur-sm border border-r-0 border-primary/15 hover:bg-primary/10"
           >
-            {rightPanelOpen ? (
-              <ChevronRight className="h-4 w-4 text-primary/70" />
-            ) : (
-              <ChevronLeft className="h-4 w-4 text-primary/70" />
-            )}
+            <ChevronLeft className="h-4 w-4 text-primary/70" />
           </Button>
         </motion.div>
       )}
@@ -839,13 +871,13 @@ export default function ChatPage() {
             <div className="flex-1 flex flex-row overflow-hidden">
               <div className="flex-1 flex flex-col overflow-hidden">
                 <div
-                  className="flex-1 overflow-y-scroll p-2.5 pb-24 space-y-1.5 messages-container custom-scrollbar agent-messages-container"
+                  className="flex-1 overflow-y-scroll p-2.5 pb-24 space-y-1.5 messages-container custom-scrollbar agent-messages-container chat-surface"
                   style={{
                     width: "100%",
                     maxWidth: "1800px",
                     margin: "0 auto",
                     paddingLeft: sidebarOpen ? "260px" : "40px",
-                    paddingRight: "340px",
+                    paddingRight: rightPanelOpen ? "340px" : "10px",
                     transition: "padding 0.1s ease",
                     willChange: "transform",
                     transform: "translateZ(0)",
@@ -931,23 +963,20 @@ export default function ChatPage() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => {
-                              toggleAgentsView()
-                              setCurrentView("agent")
-                            }}
+                            onClick={() => setCurrentView("calendar")}
                             className="h-6 w-6 p-0 rounded-full hover:bg-primary/10 icon-glow"
                           >
-                            <Users className="h-4 w-4 text-primary" />
-                            <span className="sr-only">Fullscreen Agents</span>
+                            <Calendar className="h-4 w-4 text-primary" />
+                            <span className="sr-only">Calendar View</span>
                           </Button>
                         </TooltipTrigger>
-                        <TooltipContent side="left">
-                          <p className="text-[10px]">Open Agents in Fullscreen</p>
+                        <TooltipContent side="bottom">
+                          <p>Calendar View</p>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
                   </div>
-                  <div className="flex-1 p-3 overflow-y-auto overflow-x-hidden custom-scrollbar">
+                  <div className="flex-1 p-3 overflow-y-auto overflow-x-hidden custom-scrollbar chat-surface">
                     {agentResponses.length > 0 ? (
                       <div className="space-y-4">
                         {agentResponses.map((response, index) => (
@@ -1065,11 +1094,10 @@ export default function ChatPage() {
         </div>
       )}
 
-      {/* Common structure for Agents, Calendar, Settings, Storage views */}
-      {(currentView === "agents" ||
-        currentView === "calendar" ||
-        currentView === "settings" ||
-        currentView === "storage") &&
+      {/* Timeline now uses the common structure below with other views */}
+
+      {/* Common structure for Calendar, Settings, Storage, Questions, Timeline views */}
+      {(currentView === "calendar" || currentView === "settings" || currentView === "storage") &&
         currentView !== "agent" && (
           <div className="flex h-screen bg-background overflow-hidden">
             <div className="relative" style={{ marginTop: "20px" }}>
@@ -1089,27 +1117,27 @@ export default function ChatPage() {
             <div
               className="flex-1 flex flex-col h-full overflow-hidden transition-all duration-300 mt-12"
               style={{
-                marginLeft: sidebarOpen ? "40px" : "0",
-                paddingLeft: sidebarOpen ? "260px" : "40px",
-                paddingRight: "40px",
+                marginLeft: sidebarOpen ? "0px" : "0",
+                paddingLeft: sidebarOpen ? "280px" : "20px",
+                paddingRight: "0px",
               }}
             >
-              <header className="border-b py-1.5 px-2.5 flex justify-between items-center">
+              <header className={`border-b py-1.5 flex justify-between items-center relative`}>
                 <div className="flex items-center">
                   {/* Update the header labels */}
                   <h1 className="text-base font-semibold text-foreground">
-                    {currentView === "agents" && "Agents"}
-                    {currentView === "calendar" && "Knowledge Cards"}
+                    {currentView === "calendar" && "Patterns"}
                     {currentView === "settings" && "Settings"}
-                    {currentView === "storage" && "Storage"}
+                    {currentView === "storage" && "Sticky Notes"}
                   </h1>
                 </div>
               </header>
-              <div className="flex-1 overflow-auto flex justify-center items-start">
-                {currentView === "agents" && <AgentsView className="w-full" />}
-                {currentView === "calendar" && <CalendarView className="w-full max-w-4xl mx-auto" />}
-                {currentView === "settings" && <SettingsView className="w-full max-w-6xl mx-auto" />}
-                {currentView === "storage" && <StorageView className="w-full" />}
+              <div
+                className={`flex-1 overflow-auto flex items-start patterns-scrollbar ${currentView === "calendar" ? "" : "justify-center"}`}
+              >
+                {currentView === "calendar" && <CalendarView className="w-full h-full" />}
+                {currentView === "settings" && <SettingsView className="w-full" />}
+                {currentView === "storage" && <StorageView className="w-full h-full" />}
               </div>
             </div>
           </div>
@@ -1132,7 +1160,9 @@ export default function ChatPage() {
           </div>
           <div
             className="flex-1 flex flex-col h-full overflow-hidden transition-all duration-300 mt-12"
-            style={{ marginLeft: sidebarOpen ? "40px" : "0" }}
+            style={{
+              marginLeft: sidebarOpen ? "40px" : "0",
+            }}
           >
             <header className="py-1 flex justify-between items-center">
               <div className="flex items-center"></div>
@@ -1143,10 +1173,10 @@ export default function ChatPage() {
                   className="flex-1 overflow-y-scroll p-2.5 space-y-1.5 messages-container custom-scrollbar"
                   style={{
                     width: "100%",
-                    maxWidth: "1800px",
+                    maxWidth: rightPanelOpen ? "1800px" : "none",
                     margin: "0 auto",
                     paddingLeft: sidebarOpen ? "260px" : "40px",
-                    paddingRight: "340px",
+                    paddingRight: "10px",
                     transition: "padding 0.1s ease",
                     paddingBottom: "60px",
                     willChange: "transform",
@@ -1268,6 +1298,7 @@ export default function ChatPage() {
                                 style={consistentTextStyles}
                                 onFocus={() => setIsInputFocused(true)}
                                 onBlur={() => setIsInputFocused(false)}
+                                onMouseUp={handleInputMouseUp}
                                 onKeyDown={(e) => {
                                   if (e.key === "Enter" && !e.shiftKey && !isInputExpanded) {
                                     e.preventDefault()
@@ -1307,24 +1338,30 @@ export default function ChatPage() {
                 </div>
               </div>
               <div
-                className={`${rightPanelOpen ? "w-[25%]" : "w-0 opacity-0"} flex flex-col p-2.5 graph-container transition-all duration-300`}
+                className={`${rightPanelOpen ? "w-[340px] p-2.5" : "w-0 p-0"} flex flex-col graph-container transition-all duration-300 shrink-0 overflow-hidden`}
                 style={{
-                  paddingBottom: "80px",
-                  marginRight: rightPanelOpen ? "40px" : "0",
-                  marginTop: "50px",
-                  overflow: "hidden",
-                  position: "fixed",
-                  right: "0",
-                  top: "72px",
-                  bottom: "0",
-                  width: rightPanelOpen ? "25%" : "0",
-                  maxWidth: "400px",
+                  paddingBottom: rightPanelOpen ? "80px" : "0",
+                  marginRight: rightPanelOpen ? "10px" : "0",
+                  marginTop: rightPanelOpen ? "50px" : "0",
+                  maxWidth: rightPanelOpen ? "400px" : "0",
+                  opacity: rightPanelOpen ? 1 : 0,
                 }}
               >
                 <div className="h-2/5 mb-2.5 mt-0 bg-background/80 backdrop-blur-sm rounded-xl border border-primary/10 shadow-sm overflow-hidden">
                   <div className="p-1.5 bg-gradient-to-b from-background/90 to-transparent border-b border-primary/10 flex items-center justify-between">
                     <div className="flex flex-col flex-1">
-                      <h3 className="text-[18px] font-semibold text-center text-primary">Agent Questions</h3>
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-[18px] font-semibold text-center text-primary flex-1">Quick Notes</h3>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={toggleRightPanel}
+                          className="h-6 w-6 p-0 rounded-full hover:bg-primary/10 ml-2"
+                          title="Collapse panel"
+                        >
+                          <ChevronRight className="h-3.5 w-3.5 text-primary/70" />
+                        </Button>
+                      </div>
                       <div className="flex justify-between items-center mt-1">
                         <span className="text-xs text-primary/70">
                           {currentQuestionIndex}/{totalQuestions}
@@ -1349,7 +1386,7 @@ export default function ChatPage() {
                 </div>
                 <div className="flex-1 border border-primary/15 rounded-xl overflow-hidden bg-background/80 backdrop-blur-sm flex flex-col shadow-sm mb-8">
                   <div className="p-1.5 bg-gradient-to-b from-background/90 to-transparent border-b border-primary/10 flex items-center justify-between">
-                    <h3 className="text-[18px] font-semibold text-center text-primary flex-1">Agent Interpretation</h3>
+                    <h3 className="text-[18px] font-semibold text-center text-primary flex-1">Quick History</h3>
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
@@ -1359,17 +1396,17 @@ export default function ChatPage() {
                             onClick={toggleAgentInterpretation}
                             className="h-6 w-6 p-0 rounded-full hover:bg-primary/10 icon-glow"
                           >
-                            <Users className="h-4 w-4 text-primary" />
-                            <span className="sr-only">Fullscreen Agent Interpretation</span>
+                            <History className="h-4 w-4 text-primary" />
+                            <span className="sr-only">Fullscreen Quick History</span>
                           </Button>
                         </TooltipTrigger>
                         <TooltipContent side="left">
-                          <p className="text-[10px]">Open Agent Interpretation in Fullscreen</p>
+                          <p className="text-[10px]">Open Quick History in Fullscreen</p>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
                   </div>
-                  <div className="flex-1 p-3 overflow-y-auto overflow-x-hidden custom-scrollbar">
+                  <div className="flex-1 p-3 overflow-y-auto overflow-x-hidden custom-scrollbar chat-surface">
                     {agentResponses.length > 0 ? (
                       <div className="space-y-4">
                         {agentResponses.map((response, index) => (

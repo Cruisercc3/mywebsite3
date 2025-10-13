@@ -479,6 +479,33 @@
     opacity: 1;
   }
 
+  /* Added colorful hover effect for textarea inputs */
+  textarea.colorful-input {
+    position: relative;
+  }
+
+  textarea.colorful-input:hover {
+    background: linear-gradient(
+      90deg,
+      rgb(131, 179, 32),
+      rgb(47, 195, 106),
+      rgb(42, 169, 210),
+      rgb(4, 112, 202),
+      rgb(107, 10, 255),
+      rgb(183, 0, 218),
+      rgb(218, 0, 171),
+      rgb(230, 64, 92),
+      rgb(232, 98, 63),
+      rgb(249, 129, 47)
+    );
+    background-size: 1000% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent !important;
+    -webkit-text-fill-color: transparent !important;
+    animation: gradientShift 3s ease infinite;
+  }
+
   /* Pulse animation for send button */
   @keyframes pulse {
     0% {
@@ -554,6 +581,42 @@
     width: 100%;
     box-sizing: border-box;
   }
+
+  /* Draggable card styles */
+  .draggable-card {
+    cursor: grab;
+    user-select: none;
+    touch-action: none;
+    /* ensure draggable elements can overlay entire interface */
+    z-index: 9999 !important;
+    position: fixed !important;
+  }
+
+  .draggable-card:active {
+    cursor: grabbing;
+  }
+
+  /* ensure sticky notes and highlight cards can overlay all interface elements */
+  .sticky-note-overlay,
+  .highlight-card-overlay {
+    z-index: 9999 !important;
+    position: fixed !important;
+    pointer-events: auto !important;
+    /* Added additional properties to ensure full viewport overlay */
+    isolation: isolate !important;
+    will-change: transform !important;
+    contain: layout style paint !important;
+    overflow: visible !important;
+  }
+
+  /* Added specific rules to prevent container clipping */
+  .highlight-card-overlay {
+    top: 0 !important;
+    left: 0 !important;
+    right: auto !important;
+    bottom: auto !important;
+    transform-origin: top left !important;
+  }
 }
 
 /* Interactive text styles */
@@ -580,8 +643,7 @@
   color: hsl(var(--foreground)) !important;
   position: relative;
   z-index: 1;
-  letter-spacing: -0.015em !important;
-  word-spacing: normal !important;
+  /* base rule intentionally neutral to avoid impacting non-chat UI */
 }
 
 .colorful-word:hover {
@@ -680,31 +742,24 @@
   }
 }
 
-/* Draggable card styles */
-.draggable-card {
-  cursor: grab;
-  user-select: none;
-  touch-action: none;
-}
-
-.draggable-card:active {
-  cursor: grabbing;
-}
-
-/* Add word-by-word animation styles */
-.word-by-word-animation {
+/* Add word-by-word animation styles — scoped */
+.chat-surface .word-by-word-animation,
+.agent-interpretation .word-by-word-animation,
+.graph-container .word-by-word-animation {
   white-space: pre-wrap;
-  letter-spacing: -0.015em !important;
+  letter-spacing: -0.02em !important;
   word-spacing: normal !important;
 }
 
-.word-by-word-animation .colorful-word {
+.chat-surface .word-by-word-animation .colorful-word,
+.agent-interpretation .word-by-word-animation .colorful-word,
+.graph-container .word-by-word-animation .colorful-word {
   display: inline;
   transition: color 0.2s ease, text-shadow 0.2s ease;
   white-space: pre-wrap;
-  letter-spacing: -0.015em !important;
+  letter-spacing: -0.02em !important;
   word-spacing: normal !important;
-  margin-right: 0.25em !important;
+  margin-right: 0 !important;
 }
 
 /* Apply word-by-word animation to highlight card text */
@@ -889,8 +944,9 @@
 .p-2 {
   padding: 0.625rem !important; /* Increased from 0.5rem */
 }
-\
-.p-2.5 {
+
+/* Fixed CSS selector for p-2.5 class and removed backslash */
+.\32 \.5 {
   padding: 0.75rem !important; /* Increased from 0.625rem */
 }
 
@@ -908,8 +964,9 @@
   height: 2.25rem !important; /* Increased from 2rem */
 }
 
-/* Increase icon sizes */ \
-.h-3.5, .w-3.5 {
+/* Fixed CSS selectors for decimal point classes and removed backslash */
+/* Increase icon sizes */
+.\33 \.5 {
   height: 1rem !important;
   width: 1rem !important;
 }
@@ -1583,9 +1640,9 @@ button {
   width: 100% !important;
   display: block;
   font-size: 18px !important;
-  line-height: 1.6 !important;
+  line-height: 1.5 !important;
   text-align: left !important;
-  letter-spacing: -0.015em !important;
+  letter-spacing: -0.02em !important;
   word-spacing: normal !important;
 }
 
@@ -1651,14 +1708,18 @@ button {
   padding: 0 !important;
 }
 
-/* Ensure the message-content class doesn't override the colorful word effect */
-.message-content .colorful-word {
-  display: inline-block;
+/* Ensure the message-content class doesn't override the colorful word effect — scoped */
+.chat-surface .message-content .colorful-word,
+.agent-interpretation .message-content .colorful-word,
+.graph-container .message-content .colorful-word {
+  display: inline;
   transition: color 0.3s ease;
   margin-right: 0;
   color: hsl(var(--foreground)) !important;
   position: relative;
   z-index: 1;
+  letter-spacing: -0.02em !important;
+  word-spacing: normal !important;
 }
 
 /* Smooth transition for right panel collapse */
@@ -1709,7 +1770,7 @@ button {
   min-width: 250px !important;
 }
 
-/* Add these styles to fix the padding and spacing issues */
+/* Add these styles to ensure the scrollbar is always visible in the main messages container */
 
 /* Ensure proper spacing at the bottom of scrollable containers */
 .messages-container {
@@ -1861,10 +1922,6 @@ Ensure scrollbar is visible in the messages container */
 .messages-container {
   scrollbar-width: thin !important;
   scrollbar-color: hsl(var(--primary) / 0.2) transparent !important;
-}
-
-/* Ensure the scrollbar doesn't disappear when not hovering */
-.messages-container {
   overflow-y: scroll !important; /* Changed from auto to scroll to always show scrollbar */
   padding-right: 5px !important; /* Add padding to prevent content from being hidden by scrollbar */
 }
@@ -2067,27 +2124,14 @@ textarea {
   pointer-events: none;
 }
 
-/* Ensure agent interpretation components use the same font as main UI */
-.agent-interpretation .message-content,
-.agent-interpretation .colorful-word,
-.agent-interpretation .word-by-word-animation,
-.agent-message-content,
-.agent-interpretation .prose-like,
-.graph-container .prose-like {
-  font-family: var(--font-inter) !important;
-  font-weight: 400 !important;
+/* Ensure consistent font size between input and output — scoped to chat only */
+.chat-surface .message-content,
+.chat-surface .colorful-word {
   font-size: 18px !important;
 }
 
-/* Ensure consistent font size between input and output */
-textarea,
-.message-content,
-.colorful-word {
-  font-size: 18px !important;
-}
-
-/* Add these styles to ensure consistent text formatting and alignment */
-.message-content,
+/* Add these styles to ensure consistent text formatting and alignment — scoped */
+.chat-surface .message-content,,
 .agent-interpretation .message-content,
 .graph-container .message-content {
   padding-left: 17px !important;
@@ -2099,27 +2143,31 @@ textarea,
   width: 100% !important;
   display: block;
   font-size: 18px !important;
-  line-height: 1.6 !important;
+  line-height: 1.5 !important;
   text-align: left !important;
 }
 
-/* Ensure proper word spacing */
-.colorful-word {
-  display: inline-block;
+/* Ensure proper word spacing — scoped and global base kept minimal */
+.chat-surface .colorful-word,
+.agent-interpretation .colorful-word,
+.graph-container .colorful-word {
+  display: inline;
   transition: color 0.3s ease;
-  margin-right: 0.25em !important;
+  margin-right: 0 !important;
   color: hsl(var(--foreground)) !important;
   position: relative;
   z-index: 1;
+  letter-spacing: -0.02em !important;
+  word-spacing: normal !important;
 }
 
-/* Ensure consistent alignment between main UI and agent interpretation */
+/* Ensure consistent alignment between main UI and agent interpretation — scoped */
 .agent-interpretation .message-content,
 .agent-interpretation .colorful-word,
 .agent-interpretation .word-by-word-animation,
-.messages-container .message-content,
-.messages-container .colorful-word,
-.messages-container .word-by-word-animation {
+.chat-surface .message-content,
+.chat-surface .colorful-word,
+.chat-surface .word-by-word-animation {
   text-align: left !important;
   white-space: pre-wrap !important;
   word-break: break-word !important;
@@ -2164,11 +2212,12 @@ textarea,
   margin-top: auto;
 }
 
-textarea,
+/* Remove global input tightening to avoid affecting sidebar inputs */
+/* textarea,
 input[type="text"] {
   letter-spacing: -0.015em !important;
   word-spacing: normal !important;
-}
+} */
 
 .agent-interpretation .message-content,
 .agent-interpretation .colorful-word,
@@ -2184,6 +2233,50 @@ input[type="text"] {
   line-height: 1.6 !important;
   font-family: var(--font-inter) !important;
   font-weight: 400 !important;
-  letter-spacing: -0.015em !important;
+  letter-spacing: -0.02em !important;
   word-spacing: normal !important;
+}
+
+/* Remove blur effects from highlight card overlay to ensure crystal clear appearance */
+.highlight-card-overlay {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Renamed from insights-scrollbar to patterns-scrollbar to match the patterns terminology */
+/* Add specific scrollbar styling for patterns container to maintain positioning */
+.patterns-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.patterns-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.patterns-scrollbar::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary) / 0.2);
+  border-radius: 10px;
+}
+
+.patterns-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.4);
+}
+
+/* For Firefox */
+.patterns-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--primary) / 0.2) transparent;
+}
+
+@layer utilities {
+  .bg-grid-slate-200\/50 {
+    background-image: linear-gradient(currentColor 1px, transparent 1px),
+      linear-gradient(to right, currentColor 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+}
+
+.react-draggable {
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }

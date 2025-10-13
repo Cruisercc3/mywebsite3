@@ -12,11 +12,6 @@ interface HighlightItem {
   text: string
 }
 
-interface BranchedHighlight {
-  id: string
-  items: HighlightItem[]
-}
-
 interface StickyNoteItem {
   id: string
   text: string
@@ -25,7 +20,8 @@ interface StickyNoteItem {
 
 export function NoteManager() {
   const [stickyNotes, setStickyNotes] = useState<StickyNoteItem[]>([])
-  const [branchedHighlights, setBranchedHighlights] = useState<BranchedHighlight[]>([])
+  const [highlights, setHighlights] = useState<HighlightItem[]>([])
+  const [showHighlightCard, setShowHighlightCard] = useState(false)
   const [questionPopups, setQuestionPopups] = useState<{ id: string }[]>([])
   const [clarificationPopups, setClarificationPopups] = useState<{ id: string }[]>([])
 
@@ -34,39 +30,49 @@ export function NoteManager() {
     const handleCreateStickyNote = (event: CustomEvent) => {
       const { text, isEditable = false } = event.detail || {}
       const newNote = {
-        id: `note-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, // More unique ID
+        id: `note-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         text: text || "New note...",
         isEditable: isEditable,
       }
       setStickyNotes((prev) => [...prev, newNote])
     }
 
-    // Listen for events to create branched highlights
-    const handleCreateBranchedHighlight = (event: CustomEvent) => {
+    const handleCreateHighlight = (event: CustomEvent) => {
       const { highlight } = event.detail
       if (highlight) {
-        const newBranchedHighlight = {
-          id: `branched-${Date.now()}`,
-          items: [highlight],
-        }
-        setBranchedHighlights((prev) => [...prev, newBranchedHighlight])
+        setHighlights((prev) => [
+          ...prev,
+          {
+            id: Date.now().toString(),
+            text: highlight.text,
+          },
+        ])
+        setShowHighlightCard(true)
       }
     }
 
-    // Listen for highlight replies
+    const handleCreateBranchedHighlight = (event: CustomEvent) => {
+      const { highlight } = event.detail
+      if (highlight) {
+        setHighlights([
+          {
+            id: Date.now().toString(),
+            text: highlight.text,
+          },
+        ])
+        setShowHighlightCard(true)
+      }
+    }
+
     const handleHighlightReply = (event: CustomEvent) => {
       const { highlightId, highlightText, replyText } = event.detail
       if (highlightId && replyText) {
-        // Here you would typically handle the reply in your chat system
         console.log(`Reply to highlight ${highlightId}: ${replyText}`)
-
-        // For now, we'll just log it
         console.log(`Highlight text: ${highlightText}`)
         console.log(`Reply: ${replyText}`)
       }
     }
 
-    // Listen for question popup creation
     const handleCreateQuestionPopup = (event: CustomEvent) => {
       const newQuestionPopup = {
         id: `question-${Date.now()}`,
@@ -74,7 +80,6 @@ export function NoteManager() {
       setQuestionPopups((prev) => [...prev, newQuestionPopup])
     }
 
-    // Listen for clarification popup creation
     const handleCreateClarificationPopup = (event: CustomEvent) => {
       const newClarificationPopup = {
         id: `clarification-${Date.now()}`,
@@ -83,6 +88,7 @@ export function NoteManager() {
     }
 
     window.addEventListener("create-sticky-note", handleCreateStickyNote as EventListener)
+    window.addEventListener("create-highlight", handleCreateHighlight as EventListener)
     window.addEventListener("create-branched-highlight", handleCreateBranchedHighlight as EventListener)
     window.addEventListener("highlight-reply", handleHighlightReply as EventListener)
     window.addEventListener("create-question-popup", handleCreateQuestionPopup as EventListener)
@@ -90,6 +96,7 @@ export function NoteManager() {
 
     return () => {
       window.removeEventListener("create-sticky-note", handleCreateStickyNote as EventListener)
+      window.removeEventListener("create-highlight", handleCreateHighlight as EventListener)
       window.removeEventListener("create-branched-highlight", handleCreateBranchedHighlight as EventListener)
       window.removeEventListener("highlight-reply", handleHighlightReply as EventListener)
       window.removeEventListener("create-question-popup", handleCreateQuestionPopup as EventListener)
@@ -102,12 +109,10 @@ export function NoteManager() {
   }
 
   const handleQuestionSubmit = (question: string) => {
-    // Here you would typically handle the question submission
     console.log(`Question submitted: ${question}`)
   }
 
   const handleClarificationSubmit = (clarification: string) => {
-    // Here you would typically handle the clarification submission
     console.log(`Clarification submitted: ${clarification}`)
   }
 
@@ -127,28 +132,24 @@ export function NoteManager() {
       </AnimatePresence>
 
       <AnimatePresence>
-        {branchedHighlights.map((branched) => (
+        {showHighlightCard && (
           <HighlightCard
-            key={branched.id}
-            highlights={branched.items}
-            onRemove={() => setBranchedHighlights((prev) => prev.filter((b) => b.id !== branched.id))}
+            highlights={highlights}
+            onRemove={() => {
+              setHighlights([])
+              setShowHighlightCard(false)
+            }}
             onRemoveItem={(id) => {
-              setBranchedHighlights((prev) =>
-                prev
-                  .map((b) => {
-                    if (b.id === branched.id) {
-                      return {
-                        ...b,
-                        items: b.items.filter((item) => item.id !== id),
-                      }
-                    }
-                    return b
-                  })
-                  .filter((b) => b.items.length > 0),
-              )
+              setHighlights((prev) => {
+                const newHighlights = prev.filter((h) => h.id !== id)
+                if (newHighlights.length === 0) {
+                  setShowHighlightCard(false)
+                }
+                return newHighlights
+              })
             }}
           />
-        ))}
+        )}
       </AnimatePresence>
 
       <AnimatePresence>

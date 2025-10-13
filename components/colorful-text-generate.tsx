@@ -17,10 +17,12 @@ export function ColorfulTextGenerate({
   text,
   className = "",
   duration = 0.5,
+  disableAnimation = false,
 }: {
   text: string
   className?: string
   duration?: number
+  disableAnimation?: boolean
 }) {
   const [scope, animate] = useAnimate()
 
@@ -59,8 +61,8 @@ export function ColorfulTextGenerate({
 
   // Optimize animation for large text
   useEffect(() => {
-    // Skip animation for very large text
-    if (text.length > 3000) {
+    // Skip animation if disabled or for very large text
+    if (disableAnimation || text.length > 3000) {
       return
     }
 
@@ -79,7 +81,7 @@ export function ColorfulTextGenerate({
         delay: stagger(0.01), // Further reduced
       },
     )
-  }, [scope.current, animate, duration, text.length])
+  }, [scope.current, animate, duration, text.length, disableAnimation])
 
   // Helper function to format text with paragraphs
   const formatTextWithParagraphs = (content: string) => {
@@ -107,9 +109,10 @@ export function ColorfulTextGenerate({
         >
           {text.split("\n\n").map((paragraph, pIdx) => (
             <div key={`p-${pIdx}`} className="mb-4 last:mb-0">
-              {paragraph.split(" ").map((word, idx) => (
-                <span key={idx} className="colorful-word" style={{ marginRight: "0.25em", ...CONSISTENT_FONT_STYLES }}>
+              {paragraph.split(" ").map((word, idx, words) => (
+                <span key={idx} className="colorful-word" style={{ ...CONSISTENT_FONT_STYLES }}>
                   {word}
+                  {idx < words.length - 1 ? " " : ""}
                 </span>
               ))}
             </div>
@@ -126,14 +129,15 @@ export function ColorfulTextGenerate({
         <motion.div ref={scope} style={{ textAlign: "left", ...CONSISTENT_FONT_STYLES }}>
           {paragraphs.map((paragraph, pIdx) => (
             <div key={`para-${pIdx}`} className="mb-4 last:mb-0">
-              {paragraph.split(" ").map((word, wordIdx) => (
+              {paragraph.split(" ").map((word, wordIdx, words) => (
                 <motion.span
                   key={`${pIdx}-${wordIdx}`}
-                  initial={{ opacity: 0 }}
+                  initial={{ opacity: disableAnimation ? 1 : 0 }}
                   className="colorful-word"
-                  style={{ marginRight: "0.25em", ...CONSISTENT_FONT_STYLES }}
+                  style={{ ...CONSISTENT_FONT_STYLES }}
                 >
                   {word}
+                  {wordIdx < words.length - 1 ? " " : ""}
                 </motion.span>
               ))}
             </div>
@@ -154,13 +158,13 @@ export function ColorfulTextGenerate({
 
           return (
             <div key={`p-${pIdx}`} className={`paragraph ${isListItem ? "pl-4" : ""} ${isIndented ? "pl-6" : ""}`}>
-              {paragraph.split(" ").map((word, idx) => (
+              {paragraph.split(" ").map((word, idx, words) => (
                 <motion.span
                   key={`${word}-${idx}-${pIdx}`}
-                  className="dark:text-white text-black opacity-0 colorful-word font-user font-normal"
+                  className="dark:text-white text-black colorful-word font-user font-normal"
+                  initial={{ opacity: disableAnimation ? 1 : 0 }}
                   style={{
                     display: "inline",
-                    marginRight: "0.25em",
                     transition: "color 0.3s ease",
                     whiteSpace: "pre-wrap",
                     wordBreak: "break-word",
@@ -172,6 +176,7 @@ export function ColorfulTextGenerate({
                   }}
                 >
                   {word}
+                  {idx < words.length - 1 ? " " : ""}
                 </motion.span>
               ))}
             </div>

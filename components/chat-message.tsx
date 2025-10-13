@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from "react"
 import { cn } from "@/lib/utils"
 import type React from "react"
-import { HighlightCard } from "@/components/highlight-card"
 import { ChevronRight } from "lucide-react"
 import { ColorfulTextGenerate } from "@/components/colorful-text-generate"
 
@@ -74,15 +73,19 @@ function ChatMessage({
     setIsSelecting(true)
     setHasInteracted(true)
 
-    // Create new highlight without any text transformation
+    // Create new highlight and dispatch event to note manager
     const newHighlight: Highlight = {
       id: Date.now().toString(),
       text,
       isAdded: false,
     }
 
-    setHighlights((prev) => [...prev, newHighlight])
-    setShowHighlightCard(true)
+    // Dispatch event to create highlighted card through note manager
+    window.dispatchEvent(
+      new CustomEvent("create-highlight", {
+        detail: { highlight: newHighlight },
+      }),
+    )
 
     // Clear selection
     window.getSelection()?.removeAllRanges()
@@ -264,7 +267,7 @@ function ChatMessage({
             }}
             onMouseUp={handleMouseUp}
             onDoubleClick={handleDoubleClick}
-            onSelectStart={(e) => {
+            onSelectStartCapture={(e) => {
               // Prevent selection during animation or if already selecting
               if (shouldShowAnimation || isSelecting) {
                 e.preventDefault()
@@ -301,15 +304,6 @@ function ChatMessage({
           </div>
         </div>
       </div>
-
-      {/* Single highlight card for all highlights - ensure it doesn't interfere with text layout */}
-      {showHighlightCard && highlights.length > 0 && (
-        <div style={{ position: "fixed", zIndex: 9999, pointerEvents: "none" }}>
-          <div style={{ pointerEvents: "auto" }}>
-            <HighlightCard highlights={highlights} onRemove={removeAllHighlights} onRemoveItem={removeHighlightItem} />
-          </div>
-        </div>
-      )}
     </>
   )
 }

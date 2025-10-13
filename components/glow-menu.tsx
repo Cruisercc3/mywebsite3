@@ -3,7 +3,7 @@
 import { useCallback } from "react"
 import type * as React from "react"
 import { motion } from "framer-motion"
-import { Home, Users, Calendar, Settings, Database } from "lucide-react"
+import { Home, Network, Settings, StickyNote } from "lucide-react"
 import { useTheme } from "next-themes"
 
 interface MenuItem {
@@ -25,24 +25,16 @@ const menuItems: MenuItem[] = [
     action: "goToHome",
   },
   {
-    icon: Users,
-    label: "Agents",
+    icon: Network,
+    label: "Patterns",
     href: "#",
-    gradient: "radial-gradient(circle, rgba(249,115,22,0.15) 0%, rgba(234,88,12,0.06) 50%, rgba(194,65,12,0) 100%)",
-    iconColor: "text-primary",
-    action: "toggleBrainView",
-  },
-  {
-    icon: Calendar,
-    label: "Insights",
-    href: "#",
-    gradient: "radial-gradient(circle, rgba(34,197,94,0.15) 0%, rgba(22,163,74,0.06) 50%, rgba(21,128,61,0) 100%)",
+    gradient: "radial-gradient(circle, rgba(34,197,94,0.15) 0%, rgba(22,163,74,0.06) 50%, rgba(126,34,206,0) 100%)",
     iconColor: "text-primary",
     action: "goToCalendar",
   },
   {
-    icon: Database,
-    label: "Storage",
+    icon: StickyNote,
+    label: "Notes",
     href: "#",
     gradient: "radial-gradient(circle, rgba(168,85,247,0.15) 0%, rgba(147,51,234,0.06) 50%, rgba(126,34,206,0) 100%)",
     iconColor: "text-primary",
@@ -99,14 +91,13 @@ const sharedTransition = {
 }
 
 interface GlowMenuProps {
-  toggleBrainView?: () => void
   goToHome?: () => void
   goToCalendar?: () => void
   goToStorage?: () => void
   goToSettings?: () => void
 }
 
-export function GlowMenu({ toggleBrainView, goToHome, goToCalendar, goToStorage, goToSettings }: GlowMenuProps) {
+export function GlowMenu({ goToHome, goToCalendar, goToStorage, goToSettings }: GlowMenuProps) {
   const { theme } = useTheme()
 
   const isDarkTheme = theme === "dark"
@@ -118,12 +109,8 @@ export function GlowMenu({ toggleBrainView, goToHome, goToCalendar, goToStorage,
 
       if (!action) return
 
-      // Use setTimeout to ensure the action happens after the click event
       setTimeout(() => {
         switch (action) {
-          case "toggleBrainView":
-            toggleBrainView?.()
-            break
           case "goToHome":
             goToHome?.()
             break
@@ -139,12 +126,12 @@ export function GlowMenu({ toggleBrainView, goToHome, goToCalendar, goToStorage,
         }
       }, 0)
     },
-    [toggleBrainView, goToHome, goToCalendar, goToStorage, goToSettings],
+    [goToHome, goToCalendar, goToStorage, goToSettings],
   )
 
   return (
     <motion.nav
-      className="p-2 rounded-2xl bg-gradient-to-b from-background/80 to-background/40 backdrop-blur-lg border border-border/40 shadow-lg relative overflow-hidden"
+      className="p-2 rounded-2xl bg-background border border-border/40 shadow-lg relative overflow-hidden subpixel-antialiased"
       initial="initial"
       whileHover="hover"
     >
@@ -163,7 +150,6 @@ export function GlowMenu({ toggleBrainView, goToHome, goToCalendar, goToStorage,
             <motion.li key={item.label} className="relative">
               <motion.div
                 className="block rounded-xl overflow-visible group relative"
-                style={{ perspective: "600px" }}
                 whileHover="hover"
                 initial="initial"
               >
@@ -179,28 +165,28 @@ export function GlowMenu({ toggleBrainView, goToHome, goToCalendar, goToStorage,
                 <motion.button
                   type="button"
                   onClick={(e) => handleAction(item.action, e)}
-                  className="flex items-center gap-2 px-4 py-2 relative z-10 bg-transparent text-muted-foreground group-hover:text-foreground transition-colors rounded-xl border-0 outline-none cursor-pointer"
+                  className="flex items-center gap-2 px-4 py-2 relative z-10 bg-transparent text-muted-foreground group-hover:text-foreground transition-colors rounded-xl border-0 outline-none cursor-pointer subpixel-antialiased will-change-transform"
                   variants={itemVariants}
                   transition={sharedTransition}
                   style={{ transformStyle: "preserve-3d", transformOrigin: "center bottom" }}
                 >
-                  <span className="transition-colors duration-300 text-primary">
+                  <span className="transition-colors duration-300 text-primary will-change-transform">
                     <Icon className="h-6 w-6" />
                   </span>
-                  <span className="text-[18px]">{item.label}</span>
+                  <span className="text-[18px] font-medium tracking-tight subpixel-antialiased">{item.label}</span>
                 </motion.button>
                 <motion.button
                   type="button"
                   onClick={(e) => handleAction(item.action, e)}
-                  className="flex items-center gap-2 px-4 py-2 absolute inset-0 z-10 bg-transparent text-muted-foreground group-hover:text-foreground transition-colors rounded-xl border-0 outline-none cursor-pointer"
+                  className="flex items-center gap-2 px-4 py-2 absolute inset-0 z-10 bg-transparent text-muted-foreground group-hover:text-foreground transition-colors rounded-xl border-0 outline-none cursor-pointer subpixel-antialiased will-change-transform"
                   variants={backVariants}
                   transition={sharedTransition}
                   style={{ transformStyle: "preserve-3d", transformOrigin: "center top", rotateX: 90 }}
                 >
-                  <span className="transition-colors duration-300 text-primary">
+                  <span className="transition-colors duration-300 text-primary will-change-transform">
                     <Icon className="h-6 w-6" />
                   </span>
-                  <span className="text-[18px]">{item.label}</span>
+                  <span className="text-[18px] font-medium tracking-tight subpixel-antialiased">{item.label}</span>
                 </motion.button>
               </motion.div>
             </motion.li>

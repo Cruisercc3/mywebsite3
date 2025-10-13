@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useState, useEffect, useRef } from "react"
-import { Search, X, MessageSquare, Brain, StickyNote, HelpCircle, Plus, MoreVertical } from "lucide-react"
+import { Search, X, MessageSquare, Eye, StickyNote, HelpCircle, Plus, MoreVertical } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ThemeToggle } from "@/components/theme-toggle"
@@ -57,19 +57,19 @@ export function Sidebar({
   const [contextMenu, setContextMenu] = useState<ContextMenuState>({ visible: false, x: 0, y: 0, chatId: null })
   const [conversations, setConversations] = useState<ChatItem[]>(initialConversations)
   const [selectedChats, setSelectedChats] = useState<Set<string>>(new Set())
+  const [renamingChatId, setRenamingChatId] = useState<string | null>(null)
+  const [renameValue, setRenameValue] = useState("")
   const sidebarRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     setConversations(initialConversations)
   }, [initialConversations])
 
-  // Prevent sidebar from closing when clicking inside it
   const handleSidebarClick = (e: React.MouseEvent) => {
     e.stopPropagation()
     if (onClick) onClick(e)
   }
 
-  // Handle button clicks to dispatch events to main UI
   const handleQuestionClick = () => {
     window.dispatchEvent(new CustomEvent("create-question-popup"))
   }
@@ -89,11 +89,8 @@ export function Sidebar({
     window.dispatchEvent(new CustomEvent("create-clarification-popup"))
   }
 
-  // Handle new chat creation
   const handleNewChat = () => {
     const newChatId = `chat-${Date.now()}`
-    // In a real app, you'd update a global state or call a prop to add this chat
-    // For this example, we'll just select it, assuming app/page.tsx handles creation
     onChatSelect(newChatId)
   }
 
@@ -165,7 +162,6 @@ export function Sidebar({
     const newChatId = `collapsed-${Date.now()}`
     const newChatName = `Merged Chat (${selectedArray.length} chats)`
 
-    // Create new collapsed chat
     const newChat: ChatItem = {
       id: newChatId,
       name: newChatName,
@@ -173,7 +169,6 @@ export function Sidebar({
       subChats: [],
     }
 
-    // Remove selected chats and add the new one
     const removeSelected = (items: ChatItem[]): ChatItem[] => {
       return items.filter((item) => !selectedChats.has(item.id))
     }
@@ -183,44 +178,109 @@ export function Sidebar({
     closeContextMenu()
   }
 
+  const handleRenameChat = (chatId: string) => {
+    const findChatName = (items: ChatItem[]): string => {
+      for (const item of items) {
+        if (item.id === chatId) return item.name
+        if (item.subChats) {
+          const found = findChatName(item.subChats)
+          if (found) return found
+        }
+      }
+      return ""
+    }
+
+    const currentName = findChatName(conversations)
+    setRenameValue(currentName)
+    setRenamingChatId(chatId)
+    closeContextMenu()
+  }
+
+  const handleRenameSubmit = (chatId: string, newName: string) => {
+    if (!newName.trim()) return
+
+    const updateChatName = (items: ChatItem[]): ChatItem[] => {
+      return items.map((item) => {
+        if (item.id === chatId) {
+          return { ...item, name: newName.trim() }
+        }
+        if (item.subChats) {
+          return { ...item, subChats: updateChatName(item.subChats) }
+        }
+        return item
+      })
+    }
+
+    setConversations((prev) => updateChatName(prev))
+    setRenamingChatId(null)
+    setRenameValue("")
+  }
+
+  const handleRenameCancel = () => {
+    setRenamingChatId(null)
+    setRenameValue("")
+  }
+
   const renderChatItems = (items: ChatItem[], level = 0) => {
     return items.map((conversation) => (
       <div key={conversation.id} className="space-y-1">
         <div className="flex items-center group">
-          <button
-            className={cn(
-              "w-full text-left px-2 py-1.5 rounded-md text-sm transition-colors flex-grow",
-              conversation.active
-                ? "bg-primary/10 text-primary font-medium"
-                : selectedChats.has(conversation.id)
-                  ? "bg-blue-500/20 text-blue-600 border border-blue-500/30"
-                  : "hover:bg-sidebar-accent text-sidebar-foreground/80",
-              level > 0 && "pl-4",
-            )}
-            style={{ paddingLeft: `${0.5 + level * 1}rem` }}
-            onClick={() => onChatSelect(conversation.id)}
-            onContextMenu={(e) => handleContextMenu(e, conversation.id)}
-          >
-            <div className="flex items-center">
-              {level === 0 ? (
-                <MessageSquare className="h-4 w-4 mr-2 shrink-0" />
-              ) : (
-                <div className="w-1 h-1 rounded-full bg-primary/40 mr-2 shrink-0 ml-[1px]"></div>
-              )}
-              <span className="truncate">{conversation.name}</span>
-              {selectedChats.has(conversation.id) && (
-                <div className="w-2 h-2 rounded-full bg-blue-500 ml-auto mr-1"></div>
-              )}
+          {renamingChatId === conversation.id ? (
+            <div className="flex-grow flex items-center">
+              <Input
+                value={renameValue}
+                onChange={(e) => setRenameValue(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleRenameSubmit(conversation.id, renameValue)
+                  } else if (e.key === "Escape") {
+                    handleRenameCancel()
+                  }
+                }}
+                onBlur={() => handleRenameSubmit(conversation.id, renameValue)}
+                className="h-7 text-sm px-2"
+                style={{ paddingLeft: `${0.5 + level * 1}rem` }}
+                autoFocus
+              />
             </div>
-          </button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-7 w-7 p-0 opacity-0 group-hover:opacity-100 transition-opacity ml-1"
-            onClick={(e) => handleContextMenu(e, conversation.id)}
-          >
-            <MoreVertical className="h-3.5 w-3.5" />
-          </Button>
+          ) : (
+            <button
+              className={cn(
+                "w-full text-left px-2 py-1.5 rounded-md text-sm transition-colors flex-grow",
+                conversation.active
+                  ? "bg-primary/10 text-primary font-medium"
+                  : selectedChats.has(conversation.id)
+                    ? "bg-blue-500/20 text-blue-600 border border-blue-500/30"
+                    : "hover:bg-sidebar-accent text-sidebar-foreground/80",
+                level > 0 && "pl-4",
+              )}
+              style={{ paddingLeft: `${0.5 + level * 1}rem` }}
+              onClick={() => onChatSelect(conversation.id)}
+              onContextMenu={(e) => handleContextMenu(e, conversation.id)}
+            >
+              <div className="flex items-center">
+                {level === 0 ? (
+                  <MessageSquare className="h-4 w-4 mr-2 shrink-0" />
+                ) : (
+                  <div className="w-1 h-1 rounded-full bg-primary/40 mr-2 shrink-0 ml-[1px]"></div>
+                )}
+                <span className="truncate">{conversation.name}</span>
+                {selectedChats.has(conversation.id) && (
+                  <div className="w-2 h-2 rounded-full bg-blue-500 ml-auto mr-1"></div>
+                )}
+              </div>
+            </button>
+          )}
+          {renamingChatId !== conversation.id && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-7 w-7 p-0 opacity-0 group-hover:opacity-100 transition-opacity ml-1"
+              onClick={(e) => handleContextMenu(e, conversation.id)}
+            >
+              <MoreVertical className="h-3.5 w-3.5" />
+            </Button>
+          )}
         </div>
         {conversation.subChats && conversation.subChats.length > 0 && (
           <div className="space-y-1 mt-1">{renderChatItems(conversation.subChats, level + 1)}</div>
@@ -239,7 +299,6 @@ export function Sidebar({
       )}
       onClick={handleSidebarClick}
     >
-      {/* Header with Theme Toggle */}
       <div className="flex items-center justify-between p-4 border-b border-sidebar-border">
         <div className="flex items-center gap-3">
           <div className="bg-background/80 backdrop-blur-sm p-1.5 rounded-full shadow-sm border border-primary/10">
@@ -253,7 +312,6 @@ export function Sidebar({
         </Button>
       </div>
 
-      {/* Search */}
       <div className="p-2 border-b border-sidebar-border">
         <div className="relative">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-sidebar-foreground/40" />
@@ -267,12 +325,11 @@ export function Sidebar({
         </div>
       </div>
 
-      {/* New Chat Button */}
       <div className="p-2 border-b border-sidebar-border">
         <Button
           variant="outline"
           size="sm"
-          className="w-full h-9 justify-center text-sidebar-foreground hover:text-primary hover:bg-sidebar-accent border-sidebar-border"
+          className="w-full h-9 justify-center text-sidebar-foreground hover:text-primary hover:bg-sidebar-accent border-sidebar-border bg-transparent"
           onClick={handleNewChat}
         >
           <Plus className="h-4 w-4 mr-2" />
@@ -280,12 +337,10 @@ export function Sidebar({
         </Button>
       </div>
 
-      {/* Conversations List - with adjusted height */}
       <div className="overflow-y-auto sidebar-scroll flex-grow" style={{ height: "calc(100vh - 120px)" }}>
         <div className="p-2 space-y-1">{renderChatItems(conversations)}</div>
       </div>
 
-      {/* Action Buttons - moved higher */}
       <div className="p-2 border-t border-sidebar-border mt-auto" style={{ marginBottom: "20px" }}>
         <div className="grid grid-cols-3 gap-1">
           <Button
@@ -312,8 +367,8 @@ export function Sidebar({
             className="h-10 justify-center text-sidebar-foreground hover:text-primary hover:bg-sidebar-accent flex-col py-1"
             onClick={handleClarificationClick}
           >
-            <Brain className="h-4 w-4 mb-0.5" />
-            <span className="text-[10px]">Clarify</span>
+            <Eye className="h-4 w-4 mb-0.5" />
+            <span className="text-[10px]">Reveal</span>
           </Button>
         </div>
       </div>
@@ -335,6 +390,12 @@ export function Sidebar({
             className="w-full text-left px-3 py-1.5 text-sm hover:bg-primary/10 text-foreground"
           >
             {selectedChats.has(contextMenu.chatId!) ? "Deselect" : "Select"}
+          </button>
+          <button
+            onClick={() => handleRenameChat(contextMenu.chatId!)}
+            className="w-full text-left px-3 py-1.5 text-sm hover:bg-primary/10 text-foreground"
+          >
+            Rename
           </button>
           {selectedChats.size > 1 && (
             <button
