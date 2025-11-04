@@ -6,13 +6,17 @@ import { useState, useEffect, useRef, useCallback } from "react"
 import {
   X,
   ChevronRight,
-  ChevronLeft,
   ArrowRight,
   Maximize2,
   Minimize2,
   HelpCircle,
   History,
   Calendar,
+  Plus,
+  Settings,
+  Globe,
+  MessageSquare,
+  Search,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import ChatMessage from "@/components/chat-message"
@@ -82,7 +86,6 @@ export default function ChatPage() {
   const [isInputFocused, setIsInputFocused] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [currentView, setCurrentView] = useState<ViewType>("home")
-  const [searchQuery, setSearchQuery] = useState("")
   const [newInput, setNewInput] = useState("")
   const [agentResponse, setAgentResponse] = useState<string>("")
   const [agentResponses, setAgentResponses] = useState<string[]>([])
@@ -161,6 +164,24 @@ export default function ChatPage() {
     wordBreak: "break-word" as const,
     overflowWrap: "break-word" as const,
   }
+
+  const [inputFilter, setInputFilter] = useState<"global" | "local">("global")
+  const [showSettingsPopup, setShowSettingsPopup] = useState(false)
+  const [searchMode, setSearchMode] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("")
+  const settingsPopupRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (settingsPopupRef.current && !settingsPopupRef.current.contains(event.target as Node)) {
+        setShowSettingsPopup(false)
+      }
+    }
+    if (showSettingsPopup) {
+      document.addEventListener("mousedown", handleClickOutside)
+    }
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [showSettingsPopup])
 
   const generateMirroredResponse = (userInput: string) => {
     return userInput
@@ -819,24 +840,6 @@ export default function ChatPage() {
         </motion.div>
       )}
 
-      {currentView === "home" && !rightPanelOpen && (
-        <motion.div
-          initial={{ opacity: 0, x: 10 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: 10 }}
-          className="fixed right-0 top-20 z-50"
-        >
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={toggleRightPanel}
-            className="h-8 w-8 p-0 rounded-l-full rounded-r-none bg-background/80 backdrop-blur-sm border border-r-0 border-primary/15 hover:bg-primary/10"
-          >
-            <ChevronLeft className="h-4 w-4 text-primary/70" />
-          </Button>
-        </motion.div>
-      )}
-
       {currentView === "agent" && (
         <>
           <div className="relative" style={{ marginTop: "20px" }}>
@@ -1158,26 +1161,40 @@ export default function ChatPage() {
               conversations={conversations}
             />
           </div>
+          {!rightPanelOpen && (
+            <motion.div
+              initial={{ opacity: 0, x: 10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 10 }}
+              className="fixed right-0 top-20 z-50"
+            >
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={toggleRightPanel}
+                className="h-8 w-8 p-0 rounded-l-full rounded-r-none bg-background/80 backdrop-blur-sm border border-r-0 border-primary/15 hover:bg-primary/10"
+              >
+                <ChevronRight className="h-4 w-4 text-primary/70 rotate-180" />
+              </Button>
+            </motion.div>
+          )}
           <div
             className="flex-1 flex flex-col h-full overflow-hidden transition-all duration-300 mt-12"
             style={{
               marginLeft: sidebarOpen ? "40px" : "0",
             }}
           >
-            <header className="py-1 flex justify-between items-center">
-              <div className="flex items-center"></div>
-            </header>
+            <header className="py-1 flex justify-between items-center"></header>
             <div className="flex-1 flex flex-row overflow-hidden">
               <div className="flex-1 flex flex-col overflow-hidden">
                 <div
                   className="flex-1 overflow-y-scroll p-2.5 space-y-1.5 messages-container custom-scrollbar"
                   style={{
                     width: "100%",
-                    maxWidth: rightPanelOpen ? "1800px" : "none",
+                    maxWidth: "none",
                     margin: "0 auto",
-                    paddingLeft: sidebarOpen ? "260px" : "40px",
+                    paddingLeft: "40px",
                     paddingRight: "10px",
-                    transition: "padding 0.1s ease",
                     paddingBottom: "60px",
                     willChange: "transform",
                     transform: "translateZ(0)",
@@ -1186,64 +1203,177 @@ export default function ChatPage() {
                 >
                   {messages.length === 0 ? (
                     <div className="flex flex-col p-4">
-                      <form onSubmit={handleNewInputSubmit} className="w-full">
-                        <div className="flex items-start gap-3">
-                          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-1">
-                            <span className="text-primary text-xs font-medium">You</span>
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="relative">
-                              <div className="flex items-center mb-1">
+                      <div
+                        style={{
+                          marginLeft: sidebarOpen ? "220px" : "0",
+                          transition: "margin 0.3s ease",
+                        }}
+                      >
+                        <form onSubmit={handleNewInputSubmit} className="w-full">
+                          <div className="flex items-start gap-3">
+                            <div className="w-8 h-8 rounded-full glass-card flex items-center justify-center shrink-0 mt-1">
+                              <span className="text-primary text-xs font-medium">You</span>
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="relative">
+                                <div className="flex items-center mb-1">
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={toggleInputExpanded}
+                                    className="h-9 w-9 p-0 rounded-full hover:bg-primary/10 mr-2 flex-shrink-0"
+                                    title={isInputExpanded ? "Collapse input" : "Expand input"}
+                                  >
+                                    {isInputExpanded ? (
+                                      <Minimize2 className="h-5 w-5 text-primary/70" />
+                                    ) : (
+                                      <Maximize2 className="h-5 w-5 text-primary/70" />
+                                    )}
+                                  </Button>
+                                </div>
+                                <textarea
+                                  ref={textareaRef}
+                                  value={newInput}
+                                  onChange={(e) => setNewInput(e.target.value)}
+                                  placeholder="Type your message here..."
+                                  className={`w-full p-3 glass-input rounded-lg focus:ring-1 focus:ring-primary/30 focus:outline-none resize-none transition-all duration-300 ${isInputExpanded ? "min-h-[300px]" : "min-h-[60px]"}`}
+                                  style={consistentTextStyles}
+                                  onFocus={() => setIsInputFocused(true)}
+                                  onBlur={() => setIsInputFocused(false)}
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter" && !e.shiftKey && !isInputExpanded) {
+                                      e.preventDefault()
+                                      if (newInput.trim()) {
+                                        handleNewInputSubmit(e)
+                                      }
+                                    }
+                                  }}
+                                  autoFocus
+                                />
+                                <Button
+                                  type="submit"
+                                  className="absolute bottom-2 right-2 rounded-full bg-primary hover:bg-primary/90 shadow-md h-8 w-8 p-0 flex items-center justify-center transition-all duration-300 hover:shadow-lg"
+                                  disabled={isLoading || !newInput.trim()}
+                                >
+                                  <ArrowRight className="h-3.5 w-3.5" />
+                                  <span className="sr-only">Send</span>
+                                </Button>
+                              </div>
+                              <div className="flex items-center gap-2 mt-2 ml-1 relative">
                                 <Button
                                   type="button"
                                   variant="ghost"
                                   size="sm"
-                                  onClick={toggleInputExpanded}
-                                  className="h-6 w-6 p-0 rounded-full hover:bg-primary/10 mr-2 flex-shrink-0"
-                                  title={isInputExpanded ? "Collapse input" : "Expand input"}
+                                  className="h-7 w-7 p-0 rounded-full hover:bg-primary/10 transition-all duration-200"
+                                  title="Add files"
                                 >
-                                  {isInputExpanded ? (
-                                    <Minimize2 className="h-3.5 w-3.5 text-primary/70" />
+                                  <Plus className="h-4 w-4 text-primary/70 hover:text-primary" />
+                                </Button>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => setShowSettingsPopup(!showSettingsPopup)}
+                                  className="h-7 w-7 p-0 rounded-full hover:bg-primary/10 transition-all duration-200"
+                                  title="Chat settings"
+                                >
+                                  <Settings className="h-4 w-4 text-primary/70 hover:text-primary" />
+                                </Button>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => setSearchMode(!searchMode)}
+                                  className="h-7 w-7 p-0 rounded-full hover:bg-primary/10 transition-all duration-200"
+                                  title="Search"
+                                >
+                                  <Search className="h-4 w-4 text-primary/70 hover:text-primary" />
+                                </Button>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => setInputFilter(inputFilter === "global" ? "local" : "global")}
+                                  className="h-7 px-2 rounded-full hover:bg-primary/10 transition-all duration-200 flex items-center gap-1"
+                                  title={inputFilter === "global" ? "Global mode" : "Local mode"}
+                                >
+                                  {inputFilter === "global" ? (
+                                    <>
+                                      <Globe
+                                        className="h-4 w-4 transition-colors duration-300"
+                                        style={{ color: "#4ECDC4" }}
+                                      />
+                                      <span className="text-xs" style={{ color: "#4ECDC4" }}>
+                                        Global
+                                      </span>
+                                    </>
                                   ) : (
-                                    <Maximize2 className="h-3.5 w-3.5 text-primary/70" />
+                                    <>
+                                      <MessageSquare
+                                        className="h-4 w-4 transition-colors duration-300"
+                                        style={{ color: "#A06CD5" }}
+                                      />
+                                      <span className="text-xs" style={{ color: "#A06CD5" }}>
+                                        Local
+                                      </span>
+                                    </>
                                   )}
                                 </Button>
+
+                                {showSettingsPopup && (
+                                  <div
+                                    ref={settingsPopupRef}
+                                    className="absolute left-0 top-10 z-50 w-64 bg-background/95 rounded-lg shadow-lg border border-primary/20 p-3"
+                                  >
+                                    <h4 className="text-sm font-semibold text-primary mb-3">Chat Settings</h4>
+                                    <div className="space-y-3">
+                                      <div>
+                                        <label className="text-xs text-foreground/70 block mb-1">Model</label>
+                                        <select className="w-full text-xs p-2 glass-input rounded border border-primary/10 focus:ring-1 focus:ring-primary/30 focus:outline-none">
+                                          <option>GPT-4</option>
+                                          <option>GPT-3.5</option>
+                                          <option>Claude</option>
+                                        </select>
+                                      </div>
+                                      <div>
+                                        <label className="text-xs text-foreground/70 block mb-1">Temperature</label>
+                                        <input
+                                          type="range"
+                                          min="0"
+                                          max="1"
+                                          step="0.1"
+                                          defaultValue="0.7"
+                                          className="w-full"
+                                        />
+                                      </div>
+                                      <div>
+                                        <label className="text-xs text-foreground/70 block mb-1">Max Tokens</label>
+                                        <input
+                                          type="number"
+                                          defaultValue="2048"
+                                          className="w-full text-xs p-2 glass-input rounded border border-primary/10 focus:ring-1 focus:ring-primary/30 focus:outline-none"
+                                        />
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
                               </div>
-                              <textarea
-                                ref={textareaRef}
-                                value={newInput}
-                                onChange={(e) => setNewInput(e.target.value)}
-                                placeholder="Type your message here..."
-                                className={`w-full p-3 bg-background border border-primary/10 rounded-lg focus:ring-1 focus:ring-primary/30 focus:outline-none resize-none transition-all duration-300 ${isInputExpanded ? "min-h-[300px]" : "min-h-[60px]"}`}
-                                style={consistentTextStyles}
-                                onFocus={() => setIsInputFocused(true)}
-                                onBlur={() => setIsInputFocused(false)}
-                                onKeyDown={(e) => {
-                                  if (e.key === "Enter" && !e.shiftKey && !isInputExpanded) {
-                                    e.preventDefault()
-                                    if (newInput.trim()) {
-                                      handleNewInputSubmit(e)
-                                    }
-                                  }
-                                }}
-                                autoFocus
-                              />
-                              <Button
-                                type="submit"
-                                className="absolute bottom-2 right-2 rounded-full bg-primary hover:bg-primary/90 shadow-md h-8 w-8 p-0 flex items-center justify-center transition-all duration-300 hover:shadow-lg"
-                                disabled={isLoading || !newInput.trim()}
-                              >
-                                <ArrowRight className="h-3.5 w-3.5" />
-                                <span className="sr-only">Send</span>
-                              </Button>
                             </div>
                           </div>
-                        </div>
-                      </form>
+                        </form>
+                      </div>
                     </div>
                   ) : (
                     messageGroups.map((group, groupIndex) => (
-                      <div key={groupIndex} className="message-group">
+                      <div
+                        key={groupIndex}
+                        className="message-group"
+                        style={{
+                          marginLeft: sidebarOpen ? "220px" : "0",
+                          transition: "margin 0.3s ease",
+                        }}
+                      >
                         {group.map((message, messageIndex) => {
                           const isLatestAI =
                             message.role === "assistant" &&
@@ -1266,65 +1396,177 @@ export default function ChatPage() {
                   )}
                   {messages.length > 0 && !isLoading && (
                     <div className="flex flex-col p-4 mt-2">
-                      <form onSubmit={handleNewInputSubmit} className="w-full">
-                        <div className="flex items-start gap-3">
-                          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-1">
-                            <span className="text-primary text-xs font-medium">You</span>
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="relative">
-                              <div className="flex items-center mb-1">
+                      <div
+                        style={{
+                          marginLeft: sidebarOpen ? "220px" : "0",
+                          transition: "margin 0.3s ease",
+                        }}
+                      >
+                        <form onSubmit={handleNewInputSubmit} className="w-full">
+                          <div className="flex items-start gap-3">
+                            <div className="w-8 h-8 rounded-full glass-card flex items-center justify-center shrink-0 mt-1">
+                              <span className="text-primary text-xs font-medium">You</span>
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="relative">
+                                <div className="flex items-center mb-1">
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={toggleInputExpanded}
+                                    className="h-9 w-9 p-0 rounded-full hover:bg-primary/10 mr-2 flex-shrink-0"
+                                    title={isInputExpanded ? "Collapse input" : "Expand input"}
+                                  >
+                                    {isInputExpanded ? (
+                                      <Minimize2 className="h-5 w-5 text-primary/70" />
+                                    ) : (
+                                      <Maximize2 className="h-5 w-5 text-primary/70" />
+                                    )}
+                                  </Button>
+                                </div>
+                                <textarea
+                                  ref={textareaRef}
+                                  value={newInput}
+                                  onChange={(e) => setNewInput(e.target.value)}
+                                  placeholder="Type your message here..."
+                                  className={`w-full p-3 glass-input rounded-lg focus:ring-1 focus:ring-primary/30 focus:outline-none resize-none transition-all duration-300 ${isInputExpanded ? "min-h-[300px]" : "min-h-[60px]"}`}
+                                  style={consistentTextStyles}
+                                  onFocus={() => setIsInputFocused(true)}
+                                  onBlur={() => setIsInputFocused(false)}
+                                  onMouseUp={handleInputMouseUp}
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter" && !e.shiftKey && !isInputExpanded) {
+                                      e.preventDefault()
+                                      if (newInput.trim()) {
+                                        handleNewInputSubmit(e)
+                                      }
+                                    }
+                                  }}
+                                  autoFocus
+                                />
+                                <Button
+                                  type="submit"
+                                  className="absolute bottom-2 right-2 rounded-full bg-primary hover:bg-primary/90 shadow-md h-8 w-8 p-0 flex items-center justify-center transition-all duration-300 hover:shadow-lg"
+                                  disabled={isLoading || !newInput.trim()}
+                                >
+                                  <ArrowRight className="h-3.5 w-3.5" />
+                                  <span className="sr-only">Send</span>
+                                </Button>
+                              </div>
+                              <div className="flex items-center gap-2 mt-2 ml-1 relative">
                                 <Button
                                   type="button"
                                   variant="ghost"
                                   size="sm"
-                                  onClick={toggleInputExpanded}
-                                  className="h-6 w-6 p-0 rounded-full hover:bg-primary/10 mr-2 flex-shrink-0"
-                                  title={isInputExpanded ? "Collapse input" : "Expand input"}
+                                  className="h-7 w-7 p-0 rounded-full hover:bg-primary/10 transition-all duration-200"
+                                  title="Add files"
                                 >
-                                  {isInputExpanded ? (
-                                    <Minimize2 className="h-3.5 w-3.5 text-primary/70" />
+                                  <Plus className="h-4 w-4 text-primary/70 hover:text-primary" />
+                                </Button>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => setShowSettingsPopup(!showSettingsPopup)}
+                                  className="h-7 w-7 p-0 rounded-full hover:bg-primary/10 transition-all duration-200"
+                                  title="Chat settings"
+                                >
+                                  <Settings className="h-4 w-4 text-primary/70 hover:text-primary" />
+                                </Button>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => setSearchMode(!searchMode)}
+                                  className="h-7 w-7 p-0 rounded-full hover:bg-primary/10 transition-all duration-200"
+                                  title="Search"
+                                >
+                                  <Search className="h-4 w-4 text-primary/70 hover:text-primary" />
+                                </Button>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => setInputFilter(inputFilter === "global" ? "local" : "global")}
+                                  className="h-7 px-2 rounded-full hover:bg-primary/10 transition-all duration-200 flex items-center gap-1"
+                                  title={inputFilter === "global" ? "Global mode" : "Local mode"}
+                                >
+                                  {inputFilter === "global" ? (
+                                    <>
+                                      <Globe
+                                        className="h-4 w-4 transition-colors duration-300"
+                                        style={{ color: "#4ECDC4" }}
+                                      />
+                                      <span className="text-xs" style={{ color: "#4ECDC4" }}>
+                                        Global
+                                      </span>
+                                    </>
                                   ) : (
-                                    <Maximize2 className="h-3.5 w-3.5 text-primary/70" />
+                                    <>
+                                      <MessageSquare
+                                        className="h-4 w-4 transition-colors duration-300"
+                                        style={{ color: "#A06CD5" }}
+                                      />
+                                      <span className="text-xs" style={{ color: "#A06CD5" }}>
+                                        Local
+                                      </span>
+                                    </>
                                   )}
                                 </Button>
+
+                                {showSettingsPopup && (
+                                  <div
+                                    ref={settingsPopupRef}
+                                    className="absolute left-0 top-10 z-50 w-64 bg-background/95 rounded-lg shadow-lg border border-primary/20 p-3"
+                                  >
+                                    <h4 className="text-sm font-semibold text-primary mb-3">Chat Settings</h4>
+                                    <div className="space-y-3">
+                                      <div>
+                                        <label className="text-xs text-foreground/70 block mb-1">Model</label>
+                                        <select className="w-full text-xs p-2 glass-input rounded border border-primary/10 focus:ring-1 focus:ring-primary/30 focus:outline-none">
+                                          <option>GPT-4</option>
+                                          <option>GPT-3.5</option>
+                                          <option>Claude</option>
+                                        </select>
+                                      </div>
+                                      <div>
+                                        <label className="text-xs text-foreground/70 block mb-1">Temperature</label>
+                                        <input
+                                          type="range"
+                                          min="0"
+                                          max="1"
+                                          step="0.1"
+                                          defaultValue="0.7"
+                                          className="w-full"
+                                        />
+                                      </div>
+                                      <div>
+                                        <label className="text-xs text-foreground/70 block mb-1">Max Tokens</label>
+                                        <input
+                                          type="number"
+                                          defaultValue="2048"
+                                          className="w-full text-xs p-2 glass-input rounded border border-primary/10 focus:ring-1 focus:ring-primary/30 focus:outline-none"
+                                        />
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
                               </div>
-                              <textarea
-                                ref={textareaRef}
-                                value={newInput}
-                                onChange={(e) => setNewInput(e.target.value)}
-                                placeholder="Type your message here..."
-                                className={`w-full p-3 bg-background border border-primary/10 rounded-lg focus:ring-1 focus:ring-primary/30 focus:outline-none resize-none transition-all duration-300 ${isInputExpanded ? "min-h-[300px]" : "min-h-[60px]"}`}
-                                style={consistentTextStyles}
-                                onFocus={() => setIsInputFocused(true)}
-                                onBlur={() => setIsInputFocused(false)}
-                                onMouseUp={handleInputMouseUp}
-                                onKeyDown={(e) => {
-                                  if (e.key === "Enter" && !e.shiftKey && !isInputExpanded) {
-                                    e.preventDefault()
-                                    if (newInput.trim()) {
-                                      handleNewInputSubmit(e)
-                                    }
-                                  }
-                                }}
-                                autoFocus
-                              />
-                              <Button
-                                type="submit"
-                                className="absolute bottom-2 right-2 rounded-full bg-primary hover:bg-primary/90 shadow-md h-8 w-8 p-0 flex items-center justify-center transition-all duration-300 hover:shadow-lg"
-                                disabled={isLoading || !newInput.trim()}
-                              >
-                                <ArrowRight className="h-3.5 w-3.5" />
-                                <span className="sr-only">Send</span>
-                              </Button>
                             </div>
                           </div>
-                        </div>
-                      </form>
+                        </form>
+                      </div>
                     </div>
                   )}
                   {isLoading && (
-                    <div className="flex items-center space-x-2 p-2.5">
+                    <div
+                      className="flex items-center space-x-2 p-2.5"
+                      style={{
+                        marginLeft: sidebarOpen ? "220px" : "0",
+                        transition: "margin 0.3s ease",
+                      }}
+                    >
                       <div className="flex space-x-1">
                         <span className="w-1 h-1 bg-primary rounded-full animate-pulse" />
                         <span className="w-1 h-1 bg-primary rounded-full animate-pulse" />
@@ -1347,7 +1589,7 @@ export default function ChatPage() {
                   opacity: rightPanelOpen ? 1 : 0,
                 }}
               >
-                <div className="h-2/5 mb-2.5 mt-0 bg-background/80 backdrop-blur-sm rounded-xl border border-primary/10 shadow-sm overflow-hidden">
+                <div className="h-2/5 mb-2.5 mt-0 glass-panel rounded-xl shadow-md overflow-hidden">
                   <div className="p-1.5 bg-gradient-to-b from-background/90 to-transparent border-b border-primary/10 flex items-center justify-between">
                     <div className="flex flex-col flex-1">
                       <div className="flex items-center justify-between">
@@ -1384,7 +1626,7 @@ export default function ChatPage() {
                     <CardStackCompact />
                   </div>
                 </div>
-                <div className="flex-1 border border-primary/15 rounded-xl overflow-hidden bg-background/80 backdrop-blur-sm flex flex-col shadow-sm mb-8">
+                <div className="flex-1 border border-primary/15 rounded-xl overflow-hidden glass-panel flex flex-col shadow-md mb-8">
                   <div className="p-1.5 bg-gradient-to-b from-background/90 to-transparent border-b border-primary/10 flex items-center justify-between">
                     <h3 className="text-[18px] font-semibold text-center text-primary flex-1">Quick History</h3>
                     <TooltipProvider>

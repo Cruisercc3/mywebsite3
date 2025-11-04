@@ -52,9 +52,8 @@ function ChatMessage({
   // Memoize the text content to prevent unnecessary re-renders
   const textContent = useMemo(() => message.content, [message.content])
 
-  // Improve the selection handling to be more robust:
   const handleTextSelection = useCallback(() => {
-    if (isSelecting || isUser) return
+    if (isSelecting) return
 
     const selection = window.getSelection()
     if (!selection || selection.toString().trim() === "" || selection.toString().length < 3) {
@@ -93,12 +92,11 @@ function ChatMessage({
     setTimeout(() => {
       setIsSelecting(false)
     }, 300)
-  }, [highlights, isSelecting, isUser])
+  }, [highlights, isSelecting])
 
-  // Improve the mouse up handler to prevent double-click issues:
   const handleMouseUp = useCallback(
     (e: React.MouseEvent) => {
-      if (isUser || isSelecting) return
+      if (isSelecting) return
 
       // Ignore if this is part of a double-click
       if (e.detail > 1) {
@@ -117,9 +115,9 @@ function ChatMessage({
         if (selection && selection.toString().trim() !== "" && selection.toString().length >= 3) {
           handleTextSelection()
         }
-      }, 150) // Increased delay
+      }, 150)
     },
-    [isUser, handleTextSelection, isSelecting],
+    [handleTextSelection, isSelecting],
   )
 
   // Add double-click prevention:
@@ -170,9 +168,7 @@ function ChatMessage({
   const hasHighlights = highlights.length > 0
   const shouldShowAnimation = !isUser && isLatest && !animationHasPlayed && !hasInteracted && isMounted
 
-  // Memoize the text content - always render as plain text without any visual highlights
   const renderedText = useMemo(() => {
-    // Always use ColorfulTextGenerate to preserve hover effects
     return (
       <ColorfulTextGenerate
         text={textContent}
@@ -189,10 +185,10 @@ function ChatMessage({
           wordBreak: "break-word" as const,
           overflowWrap: "break-word" as const,
         }}
-        disableAnimation={hasInteracted || !shouldShowAnimation}
+        disableAnimation={isUser || hasInteracted || !shouldShowAnimation}
       />
     )
-  }, [textContent, hasInteracted, shouldShowAnimation])
+  }, [textContent, isUser, hasInteracted, shouldShowAnimation])
 
   // Update the animation logic to prevent re-triggering:
   useEffect(() => {
@@ -211,7 +207,7 @@ function ChatMessage({
     fontFamily: "var(--font-user)",
     fontWeight: "normal",
     lineHeight: "1.6",
-    letterSpacing: "-0.015em", // Tighter letter spacing for more attractive look
+    letterSpacing: "-0.015em",
     wordSpacing: "normal",
     textAlign: "left" as const,
     whiteSpace: "pre-wrap" as const,
@@ -221,14 +217,7 @@ function ChatMessage({
 
   return (
     <>
-      {/* Update the message styling to remove bubble backgrounds */}
-      <div
-        ref={messageRef}
-        className={cn(
-          "flex items-start gap-2.5 p-3 transition-all duration-300 mb-2.5 w-full", // Increased gap and margins
-          // Removed background styling and border radius
-        )}
-      >
+      <div ref={messageRef} className={cn("flex items-start gap-2.5 p-3 transition-all duration-300 mb-2.5 w-full")}>
         <div className="flex-1 space-y-0.5">
           {(isFirstInGroup || !isInGroup) && (
             <div className={cn("flex items-center gap-1 px-1.5 py-0.5", !isUser && "flex-col")}>
@@ -244,14 +233,11 @@ function ChatMessage({
               )}
             </div>
           )}
-          {/* Update the AI Response text to ensure it's properly displayed in agent interpretation */}
           <div
             ref={contentRef}
             className={cn(
-              "pl-17 message-content",
-              isUser
-                ? "text-[18px] font-user font-normal tracking-tight leading-relaxed"
-                : "text-[18px] font-user font-normal tracking-tight leading-relaxed interactive-text",
+              "pl-17 message-content interactive-text",
+              "text-[18px] font-user font-normal tracking-tight leading-relaxed",
             )}
             style={{
               display: "block",
@@ -263,12 +249,11 @@ function ChatMessage({
               maxWidth: "100%",
               overflow: "hidden",
               ...textStyles,
-              userSelect: isUser ? "text" : "text", // Allow text selection but handle it carefully
+              userSelect: "text",
             }}
             onMouseUp={handleMouseUp}
             onDoubleClick={handleDoubleClick}
             onSelectStartCapture={(e) => {
-              // Prevent selection during animation or if already selecting
               if (shouldShowAnimation || isSelecting) {
                 e.preventDefault()
               }
@@ -277,9 +262,16 @@ function ChatMessage({
             {isUser ? (
               <div className="flex">
                 {isExpanded || message.content.split("\n").length === 1 ? (
-                  <span style={textStyles}>{message.content}</span>
+                  <div style={textStyles}>{renderedText}</div>
                 ) : (
-                  <span style={textStyles}>{message.content.split("\n")[0]}...</span>
+                  <div style={textStyles}>
+                    <ColorfulTextGenerate
+                      text={message.content.split("\n")[0] + "..."}
+                      className="text-[18px] font-user prose-like"
+                      style={textStyles}
+                      disableAnimation={true}
+                    />
+                  </div>
                 )}
                 {message.content.split("\n").length > 1 && (
                   <button onClick={toggleExpand} className="ml-1 text-primary hover:text-primary/80 transition-colors">
@@ -289,17 +281,8 @@ function ChatMessage({
                   </button>
                 )}
               </div>
-            ) : message.role === "assistant" ? (
-              // Always use consistent rendering approach with identical styling
-              <div style={textStyles}>{renderedText}</div>
             ) : (
-              <div style={textStyles}>
-                {message.content.split("\n\n").map((paragraph, pIdx) => (
-                  <div key={`p-${pIdx}`} className="mb-4 last:mb-0">
-                    {paragraph}
-                  </div>
-                ))}
-              </div>
+              <div style={textStyles}>{renderedText}</div>
             )}
           </div>
         </div>
@@ -310,5 +293,4 @@ function ChatMessage({
 
 export default ChatMessage
 
-// Also add a named export for compatibility
 export { ChatMessage }

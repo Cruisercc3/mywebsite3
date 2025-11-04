@@ -248,7 +248,7 @@ export function Sidebar({
               className={cn(
                 "w-full text-left px-2 py-1.5 rounded-md text-sm transition-colors flex-grow",
                 conversation.active
-                  ? "bg-primary/10 text-primary font-medium"
+                  ? "bg-primary/5 text-primary font-medium"
                   : selectedChats.has(conversation.id)
                     ? "bg-blue-500/20 text-blue-600 border border-blue-500/30"
                     : "hover:bg-sidebar-accent text-sidebar-foreground/80",
@@ -293,15 +293,15 @@ export function Sidebar({
     <div
       ref={sidebarRef}
       className={cn(
-        "fixed top-[2px] left-0 z-30 h-screen w-64 bg-sidebar backdrop-blur-sm border-r border-sidebar-border transition-transform duration-300 ease-in-out flex flex-col",
+        "fixed top-0 left-0 z-30 h-screen w-64 glass-sidebar bg-sidebar transition-transform duration-300 ease-in-out flex flex-col shadow-lg -mt-3 my-0 pt-0 pb-2.5",
         isOpen ? "translate-x-0" : "-translate-x-full",
         className,
       )}
       onClick={handleSidebarClick}
     >
-      <div className="flex items-center justify-between p-4 border-b border-sidebar-border">
+      <div className="flex justify-between px-4 pb-4 border-b border-sidebar-border/50 bg-sidebar items-center pt-0 my-3">
         <div className="flex items-center gap-3">
-          <div className="bg-background/80 backdrop-blur-sm p-1.5 rounded-full shadow-sm border border-primary/10">
+          <div className="glass-card p-1.5 rounded-full shadow-sm">
             <ThemeToggle />
           </div>
           <h2 className="text-lg font-semibold text-sidebar-foreground">Chats</h2>
@@ -312,20 +312,20 @@ export function Sidebar({
         </Button>
       </div>
 
-      <div className="p-2 border-b border-sidebar-border">
+      <div className="p-2 border-b border-sidebar-border/50">
         <div className="relative">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-sidebar-foreground/40" />
           <Input
             type="search"
             placeholder="Search conversations..."
-            className="pl-9 h-9 bg-sidebar-accent border-sidebar-border text-sidebar-foreground"
+            className="pl-9 h-9 glass-input text-sidebar-foreground focus:ring-primary/10 focus:border-primary/20"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
       </div>
 
-      <div className="p-2 border-b border-sidebar-border">
+      <div className="p-2 border-b border-sidebar-border/50">
         <Button
           variant="outline"
           size="sm"
@@ -341,12 +341,12 @@ export function Sidebar({
         <div className="p-2 space-y-1">{renderChatItems(conversations)}</div>
       </div>
 
-      <div className="p-2 border-t border-sidebar-border mt-auto" style={{ marginBottom: "20px" }}>
+      <div className="p-2 border-t border-sidebar-border/50 mt-auto" style={{ marginBottom: "4px" }}>
         <div className="grid grid-cols-3 gap-1">
           <Button
             variant="ghost"
             size="sm"
-            className="h-10 justify-center text-sidebar-foreground hover:text-primary hover:bg-sidebar-accent flex-col py-1"
+            className="h-10 justify-center text-sidebar-foreground hover:text-primary hover:bg-sidebar-accent/50 flex-col py-1"
             onClick={handleQuestionClick}
           >
             <HelpCircle className="h-4 w-4 mb-0.5" />
@@ -355,7 +355,7 @@ export function Sidebar({
           <Button
             variant="ghost"
             size="sm"
-            className="h-10 justify-center text-sidebar-foreground hover:text-primary hover:bg-sidebar-accent flex-col py-1"
+            className="h-10 justify-center text-sidebar-foreground hover:text-primary hover:bg-sidebar-accent/50 flex-col py-1"
             onClick={handleStickyNoteClick}
           >
             <StickyNote className="h-4 w-4 mb-0.5" />
@@ -364,7 +364,7 @@ export function Sidebar({
           <Button
             variant="ghost"
             size="sm"
-            className="h-10 justify-center text-sidebar-foreground hover:text-primary hover:bg-sidebar-accent flex-col py-1"
+            className="h-10 justify-center text-sidebar-foreground hover:text-primary hover:bg-sidebar-accent/50 flex-col py-1"
             onClick={handleClarificationClick}
           >
             <Eye className="h-4 w-4 mb-0.5" />
@@ -376,7 +376,7 @@ export function Sidebar({
       {contextMenu.visible && (
         <div
           style={{ top: contextMenu.y, left: contextMenu.x }}
-          className="fixed z-50 bg-background border border-primary/20 rounded-md shadow-lg py-1 w-40"
+          className="fixed z-50 glass-card rounded-md shadow-lg py-1 w-40"
           onClick={(e) => e.stopPropagation()}
         >
           <button

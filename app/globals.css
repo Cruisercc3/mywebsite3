@@ -4,6 +4,7 @@
 
 @layer base {
   :root {
+    /* Ensured light theme uses white background and red primary */
     --background: 0 0% 100%;
     --foreground: 222 47% 11%;
     --card: 0 0% 100%;
@@ -27,6 +28,9 @@
     --radius: 1rem;
     --neon-blue: 210 100% 50%;
     --neon-blue-glow: 210 100% 65%;
+    /* Adding neon-purple color variables */
+    --neon-purple: 270 100% 60%;
+    --neon-purple-glow: 270 100% 75%;
 
     /* Sidebar specific variables */
     --sidebar-background: 0 0% 100%;
@@ -61,6 +65,9 @@
     --ring: 210 100% 45%;
     --neon-blue: 210 100% 60%;
     --neon-blue-glow: 210 100% 75%;
+    /* Adding neon-purple color variables for dark-blue theme */
+    --neon-purple: 270 100% 65%;
+    --neon-purple-glow: 270 100% 80%;
 
     /* Sidebar specific variables */
     --sidebar-background: 220 20% 15%;
@@ -94,6 +101,9 @@
     --ring: 340 85% 45%;
     --neon-blue: 210 100% 60%;
     --neon-blue-glow: 210 100% 75%;
+    /* Adding neon-purple color variables for dark theme */
+    --neon-purple: 270 100% 65%;
+    --neon-purple-glow: 270 100% 80%;
 
     /* Sidebar specific variables */
     --sidebar-background: 224 71% 4%;
@@ -103,6 +113,65 @@
     --sidebar-accent-foreground: 213 31% 91%;
     --sidebar-ring: 340 85% 45%;
   }
+}
+
+/* Improved dark mode glass effects for better readability - more opaque, less mirror-like */
+.glass-sidebar {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dark .glass-sidebar {
+  background: rgba(15, 15, 20, 0.85);
+  border-right: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.dark .glass-panel {
+  background: rgba(20, 20, 25, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+}
+
+.dark .glass-card {
+  background: rgba(20, 20, 25, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.glass-input {
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.dark .glass-input {
+  background: rgba(25, 25, 30, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
 
 @layer base {
@@ -1371,7 +1440,7 @@ button {
   align-items: center !important;
 }
 
-/* Ensure consistent vertical alignment between views */
+/* Ensure consistent vertical alignment in both views */
 .graph-container {
   width: 25% !important;
   display: flex !important;
@@ -1714,7 +1783,7 @@ button {
 .graph-container .message-content .colorful-word {
   display: inline;
   transition: color 0.3s ease;
-  margin-right: 0;
+  margin-right: 0 !important;
   color: hsl(var(--foreground)) !important;
   position: relative;
   z-index: 1;

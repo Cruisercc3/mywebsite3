@@ -3,8 +3,9 @@
 import { useState } from "react"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
-import { Search, Plus, Filter, MoreVertical } from "lucide-react"
+import { Search, Plus, MoreVertical } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import NotesFilterDropdown from "./notes-filter-dropdown"
 
 interface CalendarViewProps {
   className?: string
@@ -53,6 +54,7 @@ function KnowledgeCard({ card, onClick }: { card: KnowledgeCardData; onClick: ()
 export function CalendarView({ className }: CalendarViewProps) {
   const [selectedCard, setSelectedCard] = useState<KnowledgeCardData | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
+  const [patternsFilter, setPatternsFilter] = useState<"global" | "local" | "calendar">("global")
 
   // Expanded knowledge cards data to fill the page
   const knowledgeCards: KnowledgeCardData[] = [
@@ -306,7 +308,7 @@ export function CalendarView({ className }: CalendarViewProps) {
               placeholder="Search patterns..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-background border border-primary/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/30 transition-all duration-200"
+              className="w-full pl-10 pr-4 py-2 bg-background border border-primary/20 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary/10 focus:border-primary/20 transition-all duration-200"
             />
           </div>
           <Button
@@ -317,14 +319,7 @@ export function CalendarView({ className }: CalendarViewProps) {
             <Plus className="h-4 w-4 mr-2" />
             Add Insight
           </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            className="border-primary/20 hover:bg-primary/10 hover:border-primary/30 bg-transparent"
-          >
-            <Filter className="h-4 w-4 mr-2" />
-            Filter
-          </Button>
+          <NotesFilterDropdown currentFilter={patternsFilter} onFilterChange={setPatternsFilter} />
           <Button
             variant="outline"
             size="sm"
@@ -350,7 +345,7 @@ export function CalendarView({ className }: CalendarViewProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 }}
-              className="bg-background/80 backdrop-blur-sm rounded-xl border border-primary/10 p-4 hover:shadow-md transition-all duration-300 hover:border-primary/20 cursor-pointer"
+              className="bg-background/90 backdrop-blur-[2px] rounded-xl border border-primary/10 p-4 hover:shadow-md transition-all duration-300 hover:border-primary/20 cursor-pointer"
               onClick={() => handleCardClick(card)}
             >
               <div className="space-y-3">
